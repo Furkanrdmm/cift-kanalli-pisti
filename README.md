@@ -26,6 +26,9 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 - 🟢 Kahvehane masası görünümü: yeşil çuha, ahşap masa
 - 🤖 Bilgisayara karşı oyna: **2, 3 veya 4 kişilik**, 4 kişide **eşli** ya da tekli
 - 🏆 1, 3 veya 5 oyunluk maçlar
+- 🔊 Sesler ve titreşim: pişti, kanal piştisi ve **vale piştisi için özel ses**
+- ⚙️ Ayarlar: adın, masa rengi, kart arkası rengi, ses, titreşim, oyun hızı
+- 📊 İstatistikler: kazandığın maçlar, piştiler, vale piştileri, galibiyet serisi
 - 📖 Oyunun içinde "Nasıl Oynanır?" rehberi
 - 👥 Arkadaşlarla online oynama: **yakında**
 

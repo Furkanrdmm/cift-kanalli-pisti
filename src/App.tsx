@@ -1,12 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Game } from './components/Game'
 import { HowToPlay } from './components/HowToPlay'
+import { SettingsPanel } from './components/SettingsPanel'
+import { StatsScreen } from './components/StatsScreen'
+import { applyTheme, useSettings } from './game/settings'
 import { modeLabel, sideShortNames } from './game/players'
 import { type SavedMatch, clearMatch, loadMatch } from './game/save'
 
 type Screen =
   | { name: 'menu' }
   | { name: 'howto' }
+  | { name: 'settings' }
+  | { name: 'stats' }
   | { name: 'bot'; target: number; players: number; teamMode: boolean; resume: SavedMatch | null }
 
 export default function App() {
@@ -15,10 +20,14 @@ export default function App() {
   const [players, setPlayers] = useState(2)
   const [teamMode, setTeamMode] = useState(true)
   const toMenu = () => setScreen({ name: 'menu' })
+  const settings = useSettings()
+  useEffect(() => applyTheme(settings), [settings])
 
   if (screen.name === 'bot')
     return <Game target={screen.target} players={screen.players} teamMode={screen.teamMode} resume={screen.resume} onExit={toMenu} />
   if (screen.name === 'howto') return <HowToPlay onBack={toMenu} />
+  if (screen.name === 'settings') return <SettingsPanel onClose={toMenu} />
+  if (screen.name === 'stats') return <StatsScreen onBack={toMenu} />
 
   // Menüye her dönüşte kayıt yeniden okunur
   const saved = loadMatch()
@@ -26,6 +35,7 @@ export default function App() {
   return (
     <div className="table">
       <div className="menu">
+        <img className="menu-logo" src="./favicon.svg" alt="" />
         <h1 className="title">
           Çift Kanallı
           <span>Pişti</span>
@@ -93,9 +103,20 @@ export default function App() {
         <button className="btn" disabled>
           Arkadaşla Online <small>(yakında)</small>
         </button>
-        <button className="btn" onClick={() => setScreen({ name: 'howto' })}>
-          Nasıl Oynanır?
-        </button>
+        <div className="menu-row">
+          <button className="btn" onClick={() => setScreen({ name: 'howto' })}>
+            <span className="menu-icon">📖</span>
+            Kurallar
+          </button>
+          <button className="btn" onClick={() => setScreen({ name: 'stats' })}>
+            <span className="menu-icon">📊</span>
+            İstatistik
+          </button>
+          <button className="btn" onClick={() => setScreen({ name: 'settings' })}>
+            <span className="menu-icon">⚙️</span>
+            Ayarlar
+          </button>
+        </div>
       </div>
     </div>
   )

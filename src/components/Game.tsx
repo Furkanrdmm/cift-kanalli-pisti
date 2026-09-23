@@ -21,12 +21,8 @@ import { type SavedMatch, clearMatch, saveMatch } from '../game/save'
 import {
   type Box,
   type Flyer,
-  CAPTURE_PAUSE_MS,
-  COLLECT_MS,
-  DEAL_GAP_MS,
-  DEAL_MS,
   FlyLayer,
-  MOVE_MS,
+  timings,
   boxOf,
   centered,
   flyIn,
@@ -37,8 +33,10 @@ import {
   sleep,
 } from './flyers'
 import { PlayingCard } from './PlayingCard'
-
-const BOT_DELAY = 700
+import { sfx } from '../game/sound'
+import { haptic } from '../game/haptics'
+import { SettingsPanel } from './SettingsPanel'
+import { recordGame, recordMatch, recordPisti } from '../game/stats'
 
 const SUIT_SYMBOL = { S: '♠', H: '♥', D: '♦', C: '♣' } as const
 const cardName = (c: Card) => c.rank + SUIT_SYMBOL[c.suit]
@@ -87,6 +85,7 @@ export function Game({ target, players = 2, teamMode = false, resume, onExit }: 
   const [wins, setWins] = useState(() => resume?.wins ?? sidesOf(game).map(() => 0))
   const [selected, setSelected] = useState<string | null>(null)
   const [toast, setToast] = useState<GameEvent | null>(null)
+  const [showSettings, setShowSettings] = useState(false)
 
   // Animasyon durumu: animasyon sürerken ekranda "view" gösterilir, oyun durumu sonra güncellenir
   const [view, setView] = useState<GameState | null>(null)
@@ -113,7 +112,18 @@ export function Game({ target, players = 2, teamMode = false, resume, onExit }: 
   const finishGame = (next: GameState) => {
     if (!next.finished) return
     const winner = gameWinner(next)
-    if (winner !== null) setWins((w) => w.map((n, i) => (i === winner ? n + 1 : n)))
+    const mine = sideOf(next, HUMAN)
+    const newWins = wins.map((n, i) => (i === winner ? n + 1 : n))
+    setWins(newWins)
+    if (winner === mine) {
+      sfx.win()
+      haptic.win()
+    } else if (winner !== null) sfx.lose()
+
+    // İstatistikler
+    recordGame(winner === mine, score(next)[mine].total)
+    const champ = newWins.findIndex((w) => w >= target)
+    if (champ >= 0) recordMatch(champ === mine)
   }
 
   /** Desteden kartları dağıtma animasyonu (ilk dağıtımda masadaki kartlar da) */
@@ -121,12 +131,13 @@ export function Game({ target, players = 2, teamMode = false, resume, onExit }: 
     await nextFrame()
     const root = rootRef.current
     if (!root) return
+    const T = timings()
     const deck = box('[data-deck] .card')!
     const full = cardSize()
     const items: Flyer[] = []
     const n = ++seq.current
     const add = (card: Card, faceDown: boolean, to: Box | null, r1 = 0) => {
-      if (to) items.push(flyIn(`d${n}-${card.id}`, card, faceDown, deck, to, { r1, ms: DEAL_MS, delay: items.length * DEAL_GAP_MS }))
+      if (to) items.push(flyIn(`d${n}-${card.id}`, card, faceDown, deck, to, { r1, ms: T.deal, delay: items.length * T.dealGap }))
     }
 
     if (withTable) {
@@ -153,7 +164,8 @@ export function Game({ target, players = 2, teamMode = false, resume, onExit }: 
     }
 
     setFlyers(items)
-    await sleep(items.length * DEAL_GAP_MS + DEAL_MS)
+    sfx.deal(items.length, T.dealGap, T.deal)
+    await sleep(items.length * T.dealGap + T.deal)
     setHidden(new Set())
     setFlyers([])
   }
@@ -171,6 +183,7 @@ export function Game({ target, players = 2, teamMode = false, resume, onExit }: 
     const card = prev.hands[player].find((c) => c.id === move.cardId)!
     const t = move.target
     const n = ++seq.current
+    const T = timings()
 
     const opp = root.querySelectorAll(`[data-seat="${player}"] [data-opp-card]`)
     const src = from ?? (player === HUMAN ? box(`[data-card-id="${card.id}"]`) : boxOf(opp[opp.length - 1], root)) ?? box('[data-deck] .card')!
@@ -188,18 +201,32 @@ export function Game({ target, players = 2, teamMode = false, resume, onExit }: 
     const viewA: GameState = structuredClone(prev)
     viewA.hands[player] = viewA.hands[player].filter((c) => c.id !== card.id)
     setView(viewA)
-    setFlyers([flyIn(`m${n}`, card, false, src, dest, { r1: rot, ms: MOVE_MS })])
-    await sleep(MOVE_MS)
+    setFlyers([flyIn(`m${n}`, card, false, src, dest, { r1: rot, ms: T.move })])
+    sfx.play()
+    if (player === HUMAN) haptic.tap()
+    await sleep(T.move)
+    sfx.land()
 
     // 2) Aldıysa yerdeki kartlar oyuncuya doğru toplanır
     const e = next.lastEvent!
     if (e.kind === 'capture' || e.kind === 'pisti' || e.kind === 'channelPisti') {
-      if (e.kind !== 'capture') setToast(e)
-      await sleep(CAPTURE_PAUSE_MS)
+      if (e.kind !== 'capture') {
+        setToast(e)
+        const vale = e.card.rank === 'J'
+        if (vale) sfx.valePisti()
+        else if (e.kind === 'channelPisti') sfx.kanalPisti()
+        else sfx.pisti()
+        if (player === HUMAN) {
+          ;(vale ? haptic.valePisti : haptic.pisti)()
+          recordPisti(vale ? 'vale' : e.kind === 'channelPisti' ? 'kanal' : 'pisti')
+        }
+      }
+      await sleep(T.capturePause)
+      sfx.collect()
       const seat = box(`[data-seat="${player}"]`)!
       const outs: Flyer[] = []
       const out = (c: Card, faceDown: boolean, from: Box, r0: number) =>
-        outs.push(flyOut(`o${n}-${c.id}`, c, faceDown, from, seat, { r0, ms: COLLECT_MS, delay: outs.length * 40 }))
+        outs.push(flyOut(`o${n}-${c.id}`, c, faceDown, from, seat, { r0, ms: T.collect, delay: outs.length * 40 }))
       const viewB: GameState = structuredClone(viewA)
       if (t.kind === 'pile') {
         const pile = prev.piles[t.index]
@@ -218,7 +245,7 @@ export function Game({ target, players = 2, teamMode = false, resume, onExit }: 
       out(card, false, dest, rot)
       setView(viewB)
       setFlyers(outs)
-      await sleep(COLLECT_MS + outs.length * 40)
+      await sleep(T.collect + outs.length * 40)
     }
 
     // 3) Oyun durumunu güncelle; yeni el dağıtıldıysa dağıtma animasyonu
@@ -255,12 +282,12 @@ export function Game({ target, players = 2, teamMode = false, resume, onExit }: 
 
   // Bilgisayarların sırası
   useEffect(() => {
-    if (busy || game.finished || game.turn === HUMAN) return
+    if (busy || showSettings || game.finished || game.turn === HUMAN) return
     const p = game.turn
-    const t = setTimeout(() => runMove(p, chooseMove(game, p)), BOT_DELAY)
+    const t = setTimeout(() => runMove(p, chooseMove(game, p)), timings().bot)
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [game, busy])
+  }, [game, busy, showSettings])
 
   useEffect(() => {
     if (!toast) return
@@ -274,7 +301,10 @@ export function Game({ target, players = 2, teamMode = false, resume, onExit }: 
 
   const onCardClick = (card: Card) => {
     if (!myTurn) return
-    if (selected !== card.id) return setSelected(card.id)
+    if (selected !== card.id) {
+      sfx.tick()
+      return setSelected(card.id)
+    }
     // Aynı karta ikinci dokunuş: tek seçenek varsa oyna
     const legal = allTargets(game).filter((t) => isLegal(game, HUMAN, { cardId: card.id, target: t }))
     if (legal.length === 1) runMove(HUMAN, { cardId: card.id, target: legal[0] })
@@ -399,9 +429,14 @@ export function Game({ target, players = 2, teamMode = false, resume, onExit }: 
       <div className="game" ref={rootRef}>
         <div ref={measureRef} className="card card-measure" />
         <header className="topbar">
-          <button className="icon-btn" onClick={onExit} aria-label="Menüye dön">
-            ←
-          </button>
+          <div className="topbar-left">
+            <button className="icon-btn" onClick={onExit} aria-label="Menüye dön">
+              ←
+            </button>
+            <button className="icon-btn" onClick={() => setShowSettings(true)} aria-label="Ayarlar">
+              ⚙
+            </button>
+          </div>
           <div className="match-score">
             {shortNames.map((n, i) => (
               <span key={n}>
@@ -490,12 +525,14 @@ export function Game({ target, players = 2, teamMode = false, resume, onExit }: 
 
         {toast && (
           <div className="toast" key={toast.card.id}>
-            <div className="toast-title">PİŞTİ!</div>
+            <div className={'toast-title' + (toast.card.rank === 'J' ? ' toast-title--vale' : '')}>{toast.card.rank === 'J' ? 'VALE PİŞTİ!' : 'PİŞTİ!'}</div>
             <div className="toast-sub">
               {names[toast.player]} +{toast.points}
             </div>
           </div>
         )}
+
+        {showSettings && <SettingsPanel asModal onClose={() => setShowSettings(false)} />}
 
         {game.finished && !busy && (
           <ResultModal
@@ -562,7 +599,7 @@ function ResultModal({
   const rows: [string, (l: (typeof lines)[number]) => string | number][] = [
     ['Toplanan kart', (l) => l.cards],
     ['En çok kart', (l) => l.mostCards],
-    ['As / Vale / ♣2 / ♦10', (l) => l.cardPoints],
+    ['Kart puanı', (l) => l.cardPoints], // as, vale, ♣2, ♦10
     ['Pişti', (l) => `${l.pisti} (${l.pistiCount})`],
   ]
   const names = playerNames(game)

@@ -1,13 +1,22 @@
 // Uçan kart animasyonları: masanın üstünde ayrı bir katmanda kartları bir yerden başka yere kaydırır
 import type { CSSProperties } from 'react'
 import type { Card } from '../game/engine'
+import { SPEED_FACTOR, getSettings } from '../game/settings'
 import { PlayingCard } from './PlayingCard'
 
-export const MOVE_MS = 320 // elden yere
-export const CAPTURE_PAUSE_MS = 260 // alınan kartlar toplanmadan önce kısa bekleme
-export const COLLECT_MS = 420 // yerden oyuncuya
-export const DEAL_MS = 320 // desteden ele
-export const DEAL_GAP_MS = 70 // dağıtılan kartlar arası
+/** Animasyon süreleri (ms), ayarlardaki oyun hızına göre */
+export function timings() {
+  const k = SPEED_FACTOR[getSettings().speed]
+  const ms = (n: number) => Math.round(n * k)
+  return {
+    move: ms(320), // elden yere
+    capturePause: ms(260), // alınan kartlar toplanmadan önce kısa bekleme
+    collect: ms(420), // yerden oyuncuya
+    deal: ms(320), // desteden ele
+    dealGap: ms(70), // dağıtılan kartlar arası
+    bot: ms(700), // bilgisayarın düşünme süresi
+  }
+}
 
 export interface Box {
   x: number

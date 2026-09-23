@@ -45,7 +45,16 @@ export function PlayingCard({ card, faceDown, selected, disabled, small, hidden,
         <span>{label}</span>
         <span>{sym}</span>
       </div>
-      <div className="card-center">{['J', 'Q', 'K'].includes(card.rank) ? <span className="card-face">{label}</span> : sym}</div>
+      <div className="card-center">
+        {['J', 'Q', 'K'].includes(card.rank) ? (
+          <span className="card-face">
+            <b>{label}</b>
+            <small>{sym}</small>
+          </span>
+        ) : (
+          sym
+        )}
+      </div>
       <div className="card-corner card-corner--br">
         <span>{label}</span>
         <span>{sym}</span>

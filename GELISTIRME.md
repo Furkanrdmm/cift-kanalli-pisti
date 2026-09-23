@@ -88,7 +88,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - **Platform:** Telefonda tarayıcıdan açılan web oyunu (PWA). Mağaza gerekmez, link ile paylaşılır, ana ekrana eklenebilir. Sonradan gerçek uygulamaya çevrilebilir.
 - **Teknoloji:** React + TypeScript + Vite.
 - **Online:** Firebase (ücretsiz, sunucu yok). Oda kodu ile arkadaş davet edilecek. *(henüz yapılmadı)*
-- **Görünüm:** Kahvehane masası: yeşil çuha, ahşap çerçeve.
+- **Görünüm:** Kahvehane masası: çuha, ahşap çerçeve. Yumuşak ve tatlı: yuvarlak yazı tipleri (başlık/sayı: Fredoka, metin: Nunito; `@fontsource-variable` ile uygulamaya gömülü, internetsiz çalışır), hap düğmeler, yuvarlak kartlar.
 - **Oyuncu sayısı:** 2, 3 veya 4 kişi. 4 kişide eşli ya da tekli seçilir.
 - **Bilgisayara karşı oynama:** Var.
 
@@ -102,7 +102,12 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 | `src/game/bot.ts` | Bilgisayar rakibi (çıkan kartları sayar, rakibe pişti fırsatı vermemeye çalışır) |
 | `src/components/Game.tsx` | Oyun ekranı: masa, eller, sıra, sonuç penceresi |
 | `src/components/PlayingCard.tsx` | İskambil kartı görünümü |
-| `src/components/flyers.tsx` | Uçan kart animasyonları (dağıtma, atma, toplama) ve süreleri |
+| `src/components/flyers.tsx` | Uçan kart animasyonları (dağıtma, atma, toplama); süreler oyun hızına göre (`timings()`) |
+| `src/game/sound.ts` | Sesler: kart atma, oturma, toplama, dağıtma, pişti / kanal piştisi / vale piştisi, kazanma. Dosya yok, Web Audio ile üretilir |
+| `src/game/haptics.ts` | Titreşim (Capacitor Haptics) |
+| `src/game/settings.ts` | Ayarlar: ad, masa rengi, kart arkası, ses, ses seviyesi, titreşim, oyun hızı (telefona kaydedilir) |
+| `src/components/SettingsPanel.tsx` | Ayarlar ekranı (menüden) ve oyun içi ayarlar penceresi (⚙): ad, masa rengi, kart arkası, ses, titreşim, hız |
+| `src/game/stats.ts`, `src/components/StatsScreen.tsx` | İstatistikler (telefona kaydedilir) ve istatistik ekranı |
 | `src/App.tsx` | Ana menü |
 | `src/components/HowToPlay.tsx` | "Nasıl Oynanır?" ekranı (kurallar ve puanlar) |
 | `src/index.css` | Tüm görünüm (masa, kartlar, animasyonlar) |
@@ -121,7 +126,11 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - [ ] Ana ekrana eklenebilir uygulama (PWA simgesi, çevrimdışı çalışma)
 - [x] Animasyonlar: kart dağıtma, kart atma, yeri alma, son atılan kartın parlaması
 - [x] Kartı sürükleyip bırakarak oynama (dokunarak oynama da duruyor)
-- [ ] Ses efektleri, müzik, ayarlar
+- [x] Ses efektleri (telefonda üretilir), titreşim, ayarlar (ses, seviye, titreşim, oyun hızı)
+- [ ] Abimin ses kaydı ("Piştiii!", "Vale piştisi!")
+- [x] İstatistikler (maç, oyun, pişti, vale piştisi, en yüksek puan, galibiyet serisi) ve oyuncu adı
+- [x] Görünüm: masa rengi (yeşil/bordo/lacivert), kart arkası (bordo/lacivert/yeşil/siyah)
+- [ ] Müzik
 - [x] 3–4 kişilik oyun (4 kişide eşli/tekli)
 - [x] Android APK (GitHub Actions ile otomatik)
 - [x] Uygulama simgesi ve açılış ekranı
