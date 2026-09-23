@@ -1,6 +1,6 @@
 # Çift Kanallı Pişti — Geliştirme Notları
 
-> Oyuncular için tanıtım sayfası: [README.md](README.md). Bu dosya kurallar, kararlar ve kod yapısı için.
+> Oyuncular için tanıtım sayfası: [README.md](README.md). Sürüm geçmişi: [DEGISIKLIKLER.md](DEGISIKLIKLER.md). Bu dosya kurallar, kararlar ve kod yapısı için.
 
 
 Normal piştiden türetilmiş, kendi kurallarımızla oynanan kart oyunu. Telefondan arkadaşlarla ve bilgisayara karşı oynanabilen bir mobil web oyunu (PWA) olarak geliştiriliyor.
