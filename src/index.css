@@ -44,6 +44,9 @@ button {
     repeating-linear-gradient(95deg, rgba(0, 0, 0, 0.08) 0 3px, transparent 3px 11px),
     linear-gradient(180deg, var(--wood), var(--wood-dark));
   padding: 10px;
+  /* Telefonun saat/pil çubuğu ve alt gezinme çubuğunun altında kalmasın */
+  padding-top: max(10px, env(safe-area-inset-top, 0px), var(--safe-area-inset-top, 0px));
+  padding-bottom: max(10px, env(safe-area-inset-bottom, 0px), var(--safe-area-inset-bottom, 0px));
 }
 
 .game,

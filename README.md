@@ -12,6 +12,14 @@ npm run build   # yayına hazır sürüm → dist/ klasörü
 
 Telefondan denemek için: `npm run dev -- --host` çalıştır, çıkan `Network:` adresini aynı Wi-Fi'deki telefonun tarayıcısında aç.
 
+## Android APK
+
+- **İndirme linki (hep son sürüm):** https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk
+- `main` dalına her push'ta GitHub Actions APK'yı otomatik derler ve **Son Sürüm** olarak yayınlar (`.github/workflows/android.yml`). Derleme ~5 dakika sürer.
+- Uygulama web oyununu [Capacitor](https://capacitorjs.com) ile Android'e sarar (`android/` klasörü, `capacitor.config.ts`).
+- **İmza anahtarı** depoda değil: `../imza-anahtari/` klasöründe ve GitHub secrets'ta (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`). Kaybolursa telefonlardaki uygulama güncellenemez, silip yeniden kurmak gerekir.
+- Telefona kurarken "bilinmeyen kaynaklara izin ver" ve Play Protect uyarısı çıkabilir: "Yine de yükle".
+
 ---
 
 ## Oyun kuralları
@@ -73,6 +81,8 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 | `src/App.tsx` | Ana menü |
 | `src/components/HowToPlay.tsx` | "Nasıl Oynanır?" ekranı (kurallar ve puanlar) |
 | `src/index.css` | Tüm görünüm (masa, kartlar, animasyonlar) |
+| `android/`, `capacitor.config.ts` | Android uygulaması |
+| `.github/workflows/android.yml` | APK otomatik derleme |
 
 ## Yapılacaklar
 
@@ -84,7 +94,8 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - [ ] Ana ekrana eklenebilir uygulama (PWA simgesi, çevrimdışı çalışma)
 - [ ] Kart animasyonları ve ses efektleri
 - [ ] 3–4 kişilik oyun
-- [ ] İnternette yayınlama (arkadaşlara link)
+- [x] Android APK (GitHub Actions ile otomatik)
+- [ ] İnternette yayınlama (arkadaşlara web linki)
 
 ## Açık sorular
 
