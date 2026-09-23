@@ -59,6 +59,10 @@ export function HowToPlay({ onBack }: { onBack: () => void }) {
                 Kanala <b>sadece pişti yapılır</b>: kanaldaki kartın aynısını atarsın. <i>7'ye 7, kıza kız.</i>
               </li>
               <li>Kanala başka kart atılamaz. Vale de kanaldaki kartı almaz, sadece valeyle pişti olur.</li>
+              <li>
+                Elindeki kart kanaldaki kartla aynıysa, o kartı <b>sadece kanala pişti için</b> oynayabilirsin, yere atamazsın.{' '}
+                <i>Kanalda 2 varsa elindeki 2 yere gitmez.</i> O kartı oynamak zorunda değilsin, başka kartını oynayabilirsin.
+              </li>
               <li>Bir kanala pişti yapılınca o kanal boş kalır. Diğerine de pişti yapılana kadar oraya kart atılmaz.</li>
             </ul>
           </section>

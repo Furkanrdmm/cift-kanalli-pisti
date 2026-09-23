@@ -124,7 +124,8 @@ export function isLegal(s: GameState, player: number, move: Move): boolean {
   if (!card) return false
   const t = move.target
   if (s.mustFill !== null) return t.kind === 'pile' && t.index === s.mustFill
-  if (t.kind === 'pile') return t.index >= 0 && t.index < s.piles.length
+  // Kanaldaki kartın eşi sadece kanala (pişti için) oynanabilir, normal yere atılamaz
+  if (t.kind === 'pile') return t.index >= 0 && t.index < s.piles.length && !s.channels.some((ch) => ch?.rank === card.rank)
   const ch = s.channels[t.index]
   // Kanala sadece pişti yapılabilir: aynı kart (vale de sadece valeyi alır)
   return !!ch && ch.rank === card.rank

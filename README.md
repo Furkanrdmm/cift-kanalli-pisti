@@ -59,6 +59,7 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 ### Pişti Kanalları
 - Kanala **sadece pişti yapılır**: kanaldaki kartın aynısını atarsın (7'ye 7, kıza kız).
 - Kanala başka kart atılamaz. Vale de kanaldaki kartı almaz, sadece valeyle pişti olur.
+- Elindeki kart kanaldaki kartla aynıysa, o kartı **sadece kanala pişti için** oynayabilirsin, yere atamazsın (kanalda 2 varsa elindeki 2 yere gitmez). O kartı oynamak zorunda değilsin, başka kartını oynayabilirsin.
 - Bir kanala pişti yapılınca o kanal **boş kalır**. Diğerine de pişti yapılana kadar oraya kart atılmaz.
 
 ### Kanallar Bitince: İki Yer

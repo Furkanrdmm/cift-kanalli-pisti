@@ -41,6 +41,8 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - Kanala **sadece pişti yapılabilir**: kanaldaki kartla aynı kart atılır (3'e 3, valeye vale). Kanala başka kart atılamaz; vale de kanaldaki kartı **almaz**, sadece valeyle pişti olur.
 - İki kanaldan birine pişti yapılınca o kanal **boş kalır**. Diğerine de pişti yapılana kadar oraya kart atılmaz.
 - Oyuncular her turda kanala (pişti yapabiliyorsa) veya normal alana, istediği yere oynar.
+- **Kanaldaki kartın eşi sadece kanala oynanabilir:** elde kanaldaki kartla aynı kart varsa (ör. kanalda 2♣, elde 2♦) o kart normal yere atılamaz, yerin üstünde de 2 olsa yeri alamaz, sadece kanala pişti yapar. O kartı oynamak zorunlu değil. Tek kanal kaldığında da geçerli. Vale için de aynı.
+- İstisna: yer boşsa (`mustFill`) boş yere atma zorunluluğu öne geçer, o kart da yere atılır.
 
 ### Kanallar bitince: iki normal yer
 - İki kanal da pişti olunca kanalların yeri **ikinci bir normal yer** olur (kodda `piles[1]`, ekranda "2. Yer"). Asıl yer "1. Yer".
