@@ -92,6 +92,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 | `src/game/bot.ts` | Bilgisayar rakibi (çıkan kartları sayar, rakibe pişti fırsatı vermemeye çalışır) |
 | `src/components/Game.tsx` | Oyun ekranı: masa, eller, sıra, sonuç penceresi |
 | `src/components/PlayingCard.tsx` | İskambil kartı görünümü |
+| `src/components/flyers.tsx` | Uçan kart animasyonları (dağıtma, atma, toplama) ve süreleri |
 | `src/App.tsx` | Ana menü |
 | `src/components/HowToPlay.tsx` | "Nasıl Oynanır?" ekranı (kurallar ve puanlar) |
 | `src/index.css` | Tüm görünüm (masa, kartlar, animasyonlar) |
@@ -108,7 +109,8 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - [x] Yarım kalan maçı kaydetme, menüde "Oyuna Devam Et"
 - [ ] Arkadaşla online oynama (Firebase, oda kodu)
 - [ ] Ana ekrana eklenebilir uygulama (PWA simgesi, çevrimdışı çalışma)
-- [ ] Kart animasyonları ve ses efektleri
+- [x] Animasyonlar: kart dağıtma, kart atma, yeri alma, son atılan kartın parlaması
+- [ ] Ses efektleri, müzik, ayarlar
 - [ ] 3–4 kişilik oyun
 - [x] Android APK (GitHub Actions ile otomatik)
 - [x] Uygulama simgesi ve açılış ekranı
