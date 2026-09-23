@@ -137,7 +137,23 @@ export function HowToPlay({ onBack }: { onBack: () => void }) {
           </section>
 
           <section>
-            <h3>6. Ekranda Nasıl Oynanır?</h3>
+            <h3>6. 3 ve 4 Kişilik Oyun</h3>
+            <ul>
+              <li>Kurallar aynı. Her elde herkese 4'er kart dağıtılır.</li>
+              <li>2 kişide 6 el, 3 kişide 4 el, 4 kişide 3 el oynanır.</li>
+              <li>
+                <b>4 kişi eşli:</b> karşılıklı oturanlar takımdır. Takım arkadaşının kartları ve piştileri ortak sayılır. En çok kart
+                3 puanı takıma gider.
+              </li>
+              <li>
+                <b>Tekli:</b> herkes kendi puanını toplar, en çok puanı olan oyunu kazanır.
+              </li>
+              <li>Sıra saat yönünün tersine döner: senden sonra sağındaki oyuncu oynar.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h3>7. Ekranda Nasıl Oynanır?</h3>
             <ul>
               <li>Elindeki bir karta dokun, kart yukarı kalkar.</li>
               <li>

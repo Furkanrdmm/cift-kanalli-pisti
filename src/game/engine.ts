@@ -28,6 +28,8 @@ export interface GameEvent {
 
 export interface GameState {
   playerCount: number
+  /** Eşli oyunda takımlar (4 kişi: [[0,2],[1,3]]), tekli oyunda null */
+  teams: number[][] | null
   deck: Card[]
   hands: Card[][]
   /** Pişti kanalları: başta 2 slot (null = pişti olmuş, boş). İkisi de bitince [] olur. */
@@ -74,7 +76,8 @@ function tableIsValid(cards: Card[]): boolean {
   return [...counts.values()].every((n) => n < 3)
 }
 
-export function newGame(playerCount = 2, starter = 0): GameState {
+/** 2, 3 veya 4 oyuncu. teamMode: 4 kişide karşılıklı oturanlar (0-2, 1-3) takım olur */
+export function newGame(playerCount = 2, starter = 0, teamMode = false): GameState {
   let deck: Card[]
   do deck = shuffle(newDeck())
   while (!tableIsValid(deck.slice(0, 4)))
@@ -82,6 +85,7 @@ export function newGame(playerCount = 2, starter = 0): GameState {
   const [ch1, ch2, hidden, open] = deck.splice(0, 4)
   const state: GameState = {
     playerCount,
+    teams: teamMode && playerCount === 4 ? [[0, 2], [1, 3]] : null,
     deck,
     hands: Array.from({ length: playerCount }, () => []),
     channels: [ch1, ch2],
@@ -237,21 +241,40 @@ export interface ScoreLine {
   total: number
 }
 
+/** Puanlanan taraflar: eşli oyunda takımlar, tekli oyunda her oyuncu tek başına */
+export function sidesOf(s: GameState): number[][] {
+  return s.teams ?? Array.from({ length: s.playerCount }, (_, p) => [p])
+}
+
+export function sideOf(s: GameState, player: number): number {
+  return sidesOf(s).findIndex((side) => side.includes(player))
+}
+
+/** Taraf başına puan (eşli oyunda takım arkadaşlarının kartları ve piştileri toplanır) */
 export function score(s: GameState): ScoreLine[] {
-  const counts = s.captured.map((c) => c.length)
+  const sides = sidesOf(s)
+  const sum = (side: number[], f: (p: number) => number) => side.reduce((acc, p) => acc + f(p), 0)
+  const counts = sides.map((side) => sum(side, (p) => s.captured[p].length))
   const max = Math.max(...counts)
   const leaders = counts.filter((n) => n === max).length
-  return s.captured.map((cards, p) => {
-    const cardPoints = cards.reduce((sum, c) => sum + cardValue(c), 0)
-    const mostCards = counts[p] === max && leaders === 1 ? 3 : 0
-    const pisti = s.pistiPoints[p]
+  return sides.map((side, i) => {
+    const cardPoints = sum(side, (p) => s.captured[p].reduce((acc, c) => acc + cardValue(c), 0))
+    const mostCards = counts[i] === max && leaders === 1 ? 3 : 0
+    const pisti = sum(side, (p) => s.pistiPoints[p])
     return {
-      cards: cards.length,
+      cards: counts[i],
       cardPoints,
       mostCards,
       pisti,
-      pistiCount: s.pistiCount[p],
+      pistiCount: sum(side, (p) => s.pistiCount[p]),
       total: cardPoints + mostCards + pisti,
     }
   })
+}
+
+/** Oyunu kazanan taraf (eşitlikte null) */
+export function gameWinner(s: GameState): number | null {
+  const totals = score(s).map((l) => l.total)
+  const max = Math.max(...totals)
+  return totals.filter((t) => t === max).length === 1 ? totals.indexOf(max) : null
 }

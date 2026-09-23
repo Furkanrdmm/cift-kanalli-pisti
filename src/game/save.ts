@@ -16,7 +16,9 @@ export function loadMatch(): SavedMatch | null {
     const raw = localStorage.getItem(KEY)
     if (!raw) return null
     const data = JSON.parse(raw) as SavedMatch
-    return data.version === VERSION ? data : null
+    if (data.version !== VERSION) return null
+    data.game.teams ??= null // takımlardan önceki kayıtlar
+    return data
   } catch {
     return null
   }

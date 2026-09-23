@@ -1,6 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
-import { type Card, type GameEvent, type GameState, type Move, type Target, allTargets, applyMove, channelsDone, isLegal, newGame, score } from '../game/engine'
+import {
+  type Card,
+  type GameEvent,
+  type GameState,
+  type Move,
+  type Target,
+  allTargets,
+  applyMove,
+  channelsDone,
+  gameWinner,
+  isLegal,
+  newGame,
+  score,
+  sideOf,
+  sidesOf,
+} from '../game/engine'
 import { chooseMove } from '../game/bot'
+import { HUMAN, playerNames, sideNames, sideShortNames } from '../game/players'
 import { type SavedMatch, clearMatch, saveMatch } from '../game/save'
 import {
   type Box,
@@ -22,9 +38,6 @@ import {
 } from './flyers'
 import { PlayingCard } from './PlayingCard'
 
-const HUMAN = 0
-const BOT = 1
-const NAMES = ['Sen', 'Bilgisayar']
 const BOT_DELAY = 700
 
 const SUIT_SYMBOL = { S: '♠', H: '♥', D: '♦', C: '♣' } as const
@@ -33,8 +46,8 @@ const cardName = (c: Card) => c.rank + SUIT_SYMBOL[c.suit]
 /** Kanallar bitince 2 yer olur: sağdaki asıl yer "1. yer", kanalların yeri "2. yer" */
 const pileName = (index: number, pileCount: number) => (pileCount === 1 ? 'yer' : `${index + 1}. yer`)
 
-function describe(e: GameEvent, pileCount: number): string {
-  const who = NAMES[e.player]
+function describe(e: GameEvent, pileCount: number, names: string[]): string {
+  const who = names[e.player]
   const c = cardName(e.card)
   const where = e.target.kind === 'pile' ? pileName(e.target.index, pileCount) : 'kanal'
   switch (e.kind) {
@@ -62,13 +75,16 @@ const targetKey = (t: Target) => `${t.kind}-${t.index}`
 
 interface Props {
   target: number
+  /** Yeni maç için oyuncu sayısı ve eşli mi (devam edilen maçta kayıttan gelir) */
+  players?: number
+  teamMode?: boolean
   resume?: SavedMatch | null
   onExit: () => void
 }
 
-export function Game({ target, resume, onExit }: Props) {
-  const [game, setGame] = useState<GameState>(() => resume?.game ?? newGame(2, HUMAN))
-  const [wins, setWins] = useState(() => resume?.wins ?? [0, 0])
+export function Game({ target, players = 2, teamMode = false, resume, onExit }: Props) {
+  const [game, setGame] = useState<GameState>(() => resume?.game ?? newGame(players, HUMAN, teamMode))
+  const [wins, setWins] = useState(() => resume?.wins ?? sidesOf(game).map(() => 0))
   const [selected, setSelected] = useState<string | null>(null)
   const [toast, setToast] = useState<GameEvent | null>(null)
 
@@ -96,8 +112,8 @@ export function Game({ target, resume, onExit }: Props) {
 
   const finishGame = (next: GameState) => {
     if (!next.finished) return
-    const [a, b] = score(next).map((l) => l.total)
-    if (a !== b) setWins((w) => w.map((n, i) => n + (i === (a > b ? 0 : 1) ? 1 : 0)))
+    const winner = gameWinner(next)
+    if (winner !== null) setWins((w) => w.map((n, i) => (i === winner ? n + 1 : n)))
   }
 
   /** Desteden kartları dağıtma animasyonu (ilk dağıtımda masadaki kartlar da) */
@@ -126,13 +142,13 @@ export function Game({ target, resume, onExit }: Props) {
         })
       }
     }
-    const opp = root.querySelectorAll('[data-opp-card]')
     for (let i = 0; i < 4; i++) {
       for (let k = 0; k < s.playerCount; k++) {
         const p = (s.starter + k) % s.playerCount
         const c = s.hands[p][i]
         if (!c) continue
-        add(c, p !== HUMAN, p === HUMAN ? box(`[data-card-id="${c.id}"]`) : boxOf(opp[i], root))
+        const to = p === HUMAN ? box(`[data-card-id="${c.id}"]`) : boxOf(root.querySelectorAll(`[data-seat="${p}"] [data-opp-card]`)[i], root)
+        add(c, p !== HUMAN, to)
       }
     }
 
@@ -156,7 +172,7 @@ export function Game({ target, resume, onExit }: Props) {
     const t = move.target
     const n = ++seq.current
 
-    const opp = root.querySelectorAll('[data-opp-card]')
+    const opp = root.querySelectorAll(`[data-seat="${player}"] [data-opp-card]`)
     const src = from ?? (player === HUMAN ? box(`[data-card-id="${card.id}"]`) : boxOf(opp[opp.length - 1], root)) ?? box('[data-deck] .card')!
     const slot = box(`[data-target="${targetKey(t)}"]`)!
     let dest: Box
@@ -237,10 +253,11 @@ export function Game({ target, resume, onExit }: Props) {
     else saveMatch(target, wins, game)
   }, [game, wins, target])
 
-  // Bilgisayarın sırası
+  // Bilgisayarların sırası
   useEffect(() => {
-    if (busy || game.finished || game.turn !== BOT) return
-    const t = setTimeout(() => runMove(BOT, chooseMove(game, BOT)), BOT_DELAY)
+    if (busy || game.finished || game.turn === HUMAN) return
+    const p = game.turn
+    const t = setTimeout(() => runMove(p, chooseMove(game, p)), BOT_DELAY)
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game, busy])
@@ -324,9 +341,10 @@ export function Game({ target, resume, onExit }: Props) {
     setSelected(null)
   }
 
+  const names = playerNames(game)
   let status: string
   if (game.finished) status = 'Oyun bitti'
-  else if (game.turn === BOT) status = 'Bilgisayar düşünüyor…'
+  else if (game.turn !== HUMAN) status = `${names[game.turn]} düşünüyor…`
   else if (busy) status = ''
   else if (game.mustFill !== null)
     status = game.piles.length === 1 ? 'Yer boş! Yere bir kart atmak zorundasın' : `${game.mustFill + 1}. yer boş! Oraya bir kart atmak zorundasın`
@@ -371,6 +389,10 @@ export function Game({ target, resume, onExit }: Props) {
     )
   }
   const matchOver = wins.some((w) => w >= target)
+  const shortNames = sideShortNames(game)
+  // Sıra saat yönünün tersine: senden sonraki oyuncu sağda, en son oynayan solda
+  const opponents = Array.from({ length: game.playerCount - 1 }, (_, i) => game.playerCount - 1 - i)
+  const partner = game.teams ? game.teams[sideOf(game, HUMAN)].find((p) => p !== HUMAN) : undefined
 
   return (
     <div className="table">
@@ -381,9 +403,12 @@ export function Game({ target, resume, onExit }: Props) {
             ←
           </button>
           <div className="match-score">
-            <span>Sen {wins[HUMAN]}</span>
+            {shortNames.map((n, i) => (
+              <span key={n}>
+                {n} {wins[i]}
+              </span>
+            ))}
             <span className="match-target">{target} alan kazanır</span>
-            <span>{wins[BOT]} Bilgisayar</span>
           </div>
           <div className="deck-count" title="Destede kalan kart" data-deck>
             <PlayingCard faceDown small />
@@ -391,13 +416,21 @@ export function Game({ target, resume, onExit }: Props) {
           </div>
         </header>
 
-        <section data-seat={BOT} className={'player player--top' + (game.turn === BOT && !game.finished ? ' player--active' : '')}>
-          <div className="hand hand--opponent">
-            {shown.hands[BOT].map((c) => (
-              <PlayingCard key={c.id} faceDown small hidden={hidden.has(c.id)} data-opp-card="" />
-            ))}
-          </div>
-          <PlayerInfo name={NAMES[BOT]} game={shown} p={BOT} />
+        <section className={`opponents opponents--${opponents.length}`}>
+          {opponents.map((p) => (
+            <div
+              key={p}
+              data-seat={p}
+              className={'player player--top' + (game.turn === p && !game.finished ? ' player--active' : '') + (p === partner ? ' player--partner' : '')}
+            >
+              <div className="hand hand--opponent">
+                {shown.hands[p].map((c) => (
+                  <PlayingCard key={c.id} faceDown small hidden={hidden.has(c.id)} data-opp-card="" />
+                ))}
+              </div>
+              <PlayerInfo name={names[p]} game={shown} p={p} />
+            </div>
+          ))}
         </section>
 
         <section className="board">
@@ -423,11 +456,11 @@ export function Game({ target, resume, onExit }: Props) {
 
         <div className="status">
           <div className={'status-main' + (game.mustFill !== null && myTurn ? ' status-main--warn' : '')}>{status}</div>
-          {last && <div className="status-last">{describe(last, shown.piles.length)}</div>}
+          {last && <div className="status-last">{describe(last, shown.piles.length, names)}</div>}
         </div>
 
         <section data-seat={HUMAN} className={'player player--bottom' + (myTurn ? ' player--active' : '')}>
-          <PlayerInfo name={NAMES[HUMAN]} game={shown} p={HUMAN} />
+          <PlayerInfo name={names[HUMAN]} game={shown} p={HUMAN} />
           <div className="hand">
             {shown.hands[HUMAN].map((c) => (
               <PlayingCard
@@ -459,7 +492,7 @@ export function Game({ target, resume, onExit }: Props) {
           <div className="toast" key={toast.card.id}>
             <div className="toast-title">PİŞTİ!</div>
             <div className="toast-sub">
-              {NAMES[toast.player]} +{toast.points}
+              {names[toast.player]} +{toast.points}
             </div>
           </div>
         )}
@@ -471,8 +504,9 @@ export function Game({ target, resume, onExit }: Props) {
             target={target}
             matchOver={matchOver}
             onNext={() => {
-              if (matchOver) setWins([0, 0])
-              startNewGame(newGame(2, 1 - game.starter))
+              if (matchOver) setWins(wins.map(() => 0))
+              // Her oyunda başlayan oyuncu sırayla değişir
+              startNewGame(newGame(game.playerCount, (game.starter + 1) % game.playerCount, !!game.teams))
             }}
             onExit={onExit}
           />
@@ -510,16 +544,20 @@ function ResultModal({
   onExit: () => void
 }) {
   const lines = score(game)
-  const [a, b] = lines.map((l) => l.total)
-  const title = matchOver
-    ? wins[HUMAN] > wins[BOT]
-      ? 'Maçı kazandın! 🏆'
-      : 'Maçı bilgisayar kazandı'
-    : a === b
-      ? 'Berabere'
-      : a > b
-        ? 'Bu oyunu sen aldın!'
-        : 'Bu oyunu bilgisayar aldı'
+  const sides = sideNames(game)
+  const short = sideShortNames(game)
+  const mine = sideOf(game, HUMAN)
+  const winner = gameWinner(game)
+  const team = !!game.teams
+
+  let title: string
+  if (matchOver) {
+    const champ = wins.findIndex((w) => w >= target)
+    if (champ === mine) title = team ? 'Maçı kazandınız! 🏆' : 'Maçı kazandın! 🏆'
+    else title = team ? 'Maçı rakipler kazandı' : `Maçı ${sides[champ]} kazandı`
+  } else if (winner === null) title = 'Berabere'
+  else if (winner === mine) title = team ? 'Bu oyunu siz aldınız!' : 'Bu oyunu sen aldın!'
+  else title = team ? 'Bu oyunu rakipler aldı' : `Bu oyunu ${sides[winner]} aldı`
 
   const rows: [string, (l: (typeof lines)[number]) => string | number][] = [
     ['Toplanan kart', (l) => l.cards],
@@ -527,36 +565,44 @@ function ResultModal({
     ['As / Vale / ♣2 / ♦10', (l) => l.cardPoints],
     ['Pişti', (l) => `${l.pisti} (${l.pistiCount})`],
   ]
+  const names = playerNames(game)
+  const members = (i: number) => (team ? sidesOf(game)[i].map((p) => names[p]).join(' + ') : null)
 
   return (
     <div className="modal-backdrop">
       <div className="modal">
         <h2>{title}</h2>
-        <table className="score-table">
+        <table className={'score-table' + (lines.length > 2 ? ' score-table--wide' : '')}>
           <thead>
             <tr>
               <th />
-              <th>Sen</th>
-              <th>Bilgisayar</th>
+              {short.map((n, i) => (
+                <th key={n} className={i === mine ? 'score-mine' : undefined}>
+                  {n}
+                  {members(i) && <small className="score-members">{members(i)}</small>}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {rows.map(([label, f]) => (
               <tr key={label}>
                 <td>{label}</td>
-                <td>{f(lines[HUMAN])}</td>
-                <td>{f(lines[BOT])}</td>
+                {lines.map((l, i) => (
+                  <td key={i}>{f(l)}</td>
+                ))}
               </tr>
             ))}
             <tr className="score-total">
               <td>Toplam</td>
-              <td>{a}</td>
-              <td>{b}</td>
+              {lines.map((l, i) => (
+                <td key={i}>{l.total}</td>
+              ))}
             </tr>
           </tbody>
         </table>
         <div className="modal-match">
-          Maç: Sen {wins[HUMAN]} – {wins[BOT]} Bilgisayar <small>({target} alan kazanır)</small>
+          Maç: {short.map((n, i) => `${n} ${wins[i]}`).join(' · ')} <small>({target} alan kazanır)</small>
         </div>
         <div className="modal-actions">
           <button className="btn" onClick={onExit}>

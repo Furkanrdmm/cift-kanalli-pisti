@@ -72,6 +72,15 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - 52 kart bitince puanlar sayılır, en çok puanı alan **o oyunu kazanır**.
 - Maç: başta seçilir. **1, 3 veya 5 oyun** alan kazanır. Her oyunda başlayan oyuncu değişir.
 
+### 3 ve 4 kişilik oyun
+- Kurallar aynı; her elde herkese 4 kart. 52 − 4 = 48 kart: 2 kişide 6 el, 3 kişide 4 el, 4 kişide 3 el.
+- **4 kişi eşli** (`teams: [[0,2],[1,3]]`): karşılıklı oturanlar takım. Kartlar, piştiler ve "en çok kart" takım olarak sayılır (`score()` taraf başına hesaplar).
+- **Tekli:** herkes kendine.
+- Sıra saat yönünün tersine: senden sonra sağdaki oynar. Ekranda rakipler üstte, sıradaki en sağda.
+- Diğer oyuncular şimdilik bilgisayar (online gelince arkadaşlar).
+
+
+
 ---
 
 ## Verilen kararlar
@@ -80,7 +89,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - **Teknoloji:** React + TypeScript + Vite.
 - **Online:** Firebase (ücretsiz, sunucu yok). Oda kodu ile arkadaş davet edilecek. *(henüz yapılmadı)*
 - **Görünüm:** Kahvehane masası: yeşil çuha, ahşap çerçeve.
-- **Oyuncu sayısı:** Şimdilik 2 kişi. İleride 3–4 kişi eklenebilir (motor buna göre yazıldı).
+- **Oyuncu sayısı:** 2, 3 veya 4 kişi. 4 kişide eşli ya da tekli seçilir.
 - **Bilgisayara karşı oynama:** Var.
 
 ## Kod yapısı
@@ -88,6 +97,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 | Dosya | Ne yapar |
 |---|---|
 | `src/game/engine.ts` | Oyun kuralları: dağıtım, geçerli hamleler, pişti, kanallar, puanlama |
+| `src/game/players.ts` | Oyuncu/takım isimleri (Sen, Ortağın, Rakip…) |
 | `src/game/save.ts` | Yarım kalan maçı telefona kaydetme (Oyuna Devam Et) |
 | `src/game/bot.ts` | Bilgisayar rakibi (çıkan kartları sayar, rakibe pişti fırsatı vermemeye çalışır) |
 | `src/components/Game.tsx` | Oyun ekranı: masa, eller, sıra, sonuç penceresi |
@@ -112,11 +122,11 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - [x] Animasyonlar: kart dağıtma, kart atma, yeri alma, son atılan kartın parlaması
 - [x] Kartı sürükleyip bırakarak oynama (dokunarak oynama da duruyor)
 - [ ] Ses efektleri, müzik, ayarlar
-- [ ] 3–4 kişilik oyun
+- [x] 3–4 kişilik oyun (4 kişide eşli/tekli)
 - [x] Android APK (GitHub Actions ile otomatik)
 - [x] Uygulama simgesi ve açılış ekranı
 - [ ] İnternette yayınlama (arkadaşlara web linki)
 
 ## Açık sorular
 
-- 3–4 kişide kurallar nasıl olacak? (kaçar kart dağıtılacak, eşli mi oynanacak?)
+- *(Cevaplandı)* 3–4 kişide kurallar aynı, 4 kişide eşli ve tekli ikisi de var.

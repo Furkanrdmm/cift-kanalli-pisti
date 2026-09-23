@@ -796,3 +796,94 @@ button {
   transform: scale(1.06);
   box-shadow: 0 0 0 4px #fff3c4, 0 0 30px rgba(232, 194, 106, 1);
 }
+
+/* ---------- 3-4 kişilik oyun: rakipler üstte yan yana ---------- */
+.opponents {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.opponents > .player {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 220px;
+}
+
+/* Çok rakip varken kart sırtları üst üste binsin, isimler alt alta */
+.opponents--2 .hand--opponent .card + .card {
+  margin-left: -20px;
+}
+
+.opponents--3 .hand--opponent .card + .card {
+  margin-left: -30px;
+}
+
+.opponents--2 .player-info,
+.opponents--3 .player-info {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 6px;
+  font-size: 12px;
+}
+
+.opponents--2 .player-name,
+.opponents--3 .player-name {
+  width: 100%;
+  text-align: center;
+}
+
+.opponents--3 .hand--opponent {
+  --card-w-sm: calc(var(--card-w) * 0.55);
+}
+
+/* Eşli oyunda ortak */
+.player--partner .player-name {
+  color: var(--gold);
+}
+
+.player--partner {
+  box-shadow: inset 0 0 0 1px rgba(232, 194, 106, 0.25);
+}
+
+.player--partner.player--active {
+  box-shadow: inset 0 0 0 1px rgba(232, 194, 106, 0.6);
+}
+
+/* Skor tablosu 3-4 sütun */
+.score-table--wide {
+  font-size: 13px;
+}
+
+.score-table--wide td:first-child {
+  font-size: 12px;
+}
+
+.score-mine {
+  color: var(--gold);
+}
+
+.score-members {
+  display: block;
+  font-size: 10px;
+  font-weight: normal;
+  opacity: 0.7;
+}
+
+.segmented--text {
+  display: flex;
+  width: fit-content;
+  margin: 10px auto 0;
+}
+
+.segmented--text button {
+  width: auto;
+  padding: 8px 18px;
+  font-size: 16px;
+}
+
+.menu-hint {
+  margin-top: 8px;
+  font-size: 13px;
+  opacity: 0.75;
+}

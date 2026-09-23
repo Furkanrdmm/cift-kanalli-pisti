@@ -1,16 +1,23 @@
 import { useState } from 'react'
 import { Game } from './components/Game'
 import { HowToPlay } from './components/HowToPlay'
+import { modeLabel, sideShortNames } from './game/players'
 import { type SavedMatch, clearMatch, loadMatch } from './game/save'
 
-type Screen = { name: 'menu' } | { name: 'howto' } | { name: 'bot'; target: number; resume: SavedMatch | null }
+type Screen =
+  | { name: 'menu' }
+  | { name: 'howto' }
+  | { name: 'bot'; target: number; players: number; teamMode: boolean; resume: SavedMatch | null }
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'menu' })
   const [target, setTarget] = useState(3)
+  const [players, setPlayers] = useState(2)
+  const [teamMode, setTeamMode] = useState(true)
   const toMenu = () => setScreen({ name: 'menu' })
 
-  if (screen.name === 'bot') return <Game target={screen.target} resume={screen.resume} onExit={toMenu} />
+  if (screen.name === 'bot')
+    return <Game target={screen.target} players={screen.players} teamMode={screen.teamMode} resume={screen.resume} onExit={toMenu} />
   if (screen.name === 'howto') return <HowToPlay onBack={toMenu} />
 
   // Menüye her dönüşte kayıt yeniden okunur
@@ -25,13 +32,42 @@ export default function App() {
         </h1>
 
         {saved && (
-          <button className="btn btn--primary" onClick={() => setScreen({ name: 'bot', target: saved.target, resume: saved })}>
+          <button
+            className="btn btn--primary"
+            onClick={() => setScreen({ name: 'bot', target: saved.target, players: saved.game.playerCount, teamMode: !!saved.game.teams, resume: saved })}
+          >
             Oyuna Devam Et
             <small className="btn-sub">
-              Maç: Sen {saved.wins[0]} – {saved.wins[1]} Bilgisayar
+              {modeLabel(saved.game)} · {sideShortNames(saved.game).map((n, i) => `${n} ${saved.wins[i]}`).join(' – ')}
             </small>
           </button>
         )}
+
+        <div className="menu-section">
+          <div className="menu-label">Kaç kişi?</div>
+          <div className="segmented">
+            {[2, 3, 4].map((n) => (
+              <button key={n} className={n === players ? 'active' : ''} onClick={() => setPlayers(n)}>
+                {n}
+              </button>
+            ))}
+          </div>
+          {players === 4 && (
+            <div className="segmented segmented--text">
+              <button className={teamMode ? 'active' : ''} onClick={() => setTeamMode(true)}>
+                Eşli
+              </button>
+              <button className={!teamMode ? 'active' : ''} onClick={() => setTeamMode(false)}>
+                Tekli
+              </button>
+            </div>
+          )}
+          {players > 2 && (
+            <div className="menu-hint">
+              {players === 4 && teamMode ? 'Sen ve karşındaki bilgisayar bir takımsınız' : `Sen ve ${players - 1} bilgisayar`}
+            </div>
+          )}
+        </div>
 
         <div className="menu-section">
           <div className="menu-label">Kaç oyun alan kazanır?</div>
@@ -49,7 +85,7 @@ export default function App() {
           onClick={() => {
             if (saved && !confirm('Yarım kalan maç silinecek. Yeni maç başlasın mı?')) return
             clearMatch()
-            setScreen({ name: 'bot', target, resume: null })
+            setScreen({ name: 'bot', target, players, teamMode: players === 4 && teamMode, resume: null })
           }}
         >
           {saved ? 'Yeni Maç (Bilgisayara Karşı)' : 'Bilgisayara Karşı Oyna'}

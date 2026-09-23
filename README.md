@@ -24,7 +24,7 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 **Çift Kanallı Pişti**, normal piştiden türetilmiş bir kart oyunu. Kurallar normal pişti gibidir ama masada fazladan iki **pişti kanalı** vardır. Kanallar oyuna yeni pişti fırsatları ve biraz da tuzak ekler.
 
 - 🟢 Kahvehane masası görünümü: yeşil çuha, ahşap masa
-- 🤖 Bilgisayara karşı oyna
+- 🤖 Bilgisayara karşı oyna: **2, 3 veya 4 kişilik**, 4 kişide **eşli** ya da tekli
 - 🏆 1, 3 veya 5 oyunluk maçlar
 - 📖 Oyunun içinde "Nasıl Oynanır?" rehberi
 - 👥 Arkadaşlarla online oynama: **yakında**
@@ -72,6 +72,12 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 - Normal pişti gibi: en üstteki kartın aynısını atarsan ya da **vale** atarsan yerdeki bütün kartları alırsın.
 - Yerde **tek kart** varken aynısını atarsan: **PİŞTİ!**
 - Yer alınıp **boş kalırsa**, sıradaki oyuncu **mecburen yere kart atar**. O el kanala pişti yapamaz.
+
+### 3 ve 4 Kişilik Oyun
+- Kurallar aynı, her elde herkese 4'er kart dağıtılır (2 kişide 6 el, 3 kişide 4 el, 4 kişide 3 el).
+- **4 kişi eşli:** karşılıklı oturanlar takımdır; takım arkadaşının kartları ve piştileri ortak sayılır.
+- **Tekli:** herkes kendi puanını toplar.
+- Sıra saat yönünün tersine döner: senden sonra sağındaki oyuncu oynar.
 
 ### Puanlar
 | | Puan |
