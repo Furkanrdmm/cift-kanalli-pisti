@@ -1,102 +1,94 @@
+<div align="center">
+
+<img src="public/favicon.svg" width="110" alt="Çift Kanallı Pişti">
+
 # Çift Kanallı Pişti
 
-Normal piştiden türetilmiş, kendi kurallarımızla oynanan kart oyunu. Telefondan arkadaşlarla ve bilgisayara karşı oynanabilen bir mobil web oyunu (PWA) olarak geliştiriliyor.
+**Bildiğin pişti, ama iki kanallı.**
+Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 
-## Nasıl çalıştırılır
+<br>
 
-```bash
-npm install     # ilk seferde bir kez
-npm run dev     # geliştirme sunucusu → tarayıcıda http://localhost:5173
-npm run build   # yayına hazır sürüm → dist/ klasörü
+[![Android İçin İndir](https://img.shields.io/badge/Android%20İçin%20İndir-APK-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)
+
+**[⬇️ Oyunu indirmek için tıklayın](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)**
+
+<sub>Ücretsiz · 3 MB · Android 7 ve üzeri</sub>
+
+</div>
+
+---
+
+## 🃏 Oyun Nedir?
+
+**Çift Kanallı Pişti**, normal piştiden türetilmiş bir kart oyunu. Kurallar normal pişti gibidir ama masada fazladan iki **pişti kanalı** vardır. Kanallar oyuna yeni pişti fırsatları ve biraz da tuzak ekler.
+
+- 🟢 Kahvehane masası görünümü: yeşil çuha, ahşap masa
+- 🤖 Bilgisayara karşı oyna
+- 🏆 1, 3 veya 5 oyunluk maçlar
+- 📖 Oyunun içinde "Nasıl Oynanır?" rehberi
+- 👥 Arkadaşlarla online oynama: **yakında**
+
+---
+
+## 📲 Nasıl Kurulur?
+
+1. Yukarıdaki **"Oyunu indirmek için tıklayın"** linkine telefondan dokun, APK dosyası iner.
+2. İnen dosyayı aç.
+3. Telefon *"Bilinmeyen kaynaklardan yüklemeye izin ver"* diye sorarsa **izin ver**.
+4. *Play Protect* uyarısı çıkarsa **"Yine de yükle"** de. Oyun Play Store'da olmadığı için bu uyarı normal.
+
+> **Yeni sürüm çıkınca:** Aynı linkten tekrar indirip kurman yeterli. Eski sürümün üstüne kurulur.
+
+---
+
+## 📜 Kurallar
+
+### Masa
 ```
+  PİŞTİ KANALLARI            YER
+  ┌────┐  ┌────┐           ┌────┐
+  │ 7♥ │  │ Q♠ │           │ 4♣ │  ← açık
+  └────┘  └────┘           └────┘  ← altında 1 kapalı kart
+```
+- Solda **2 açık kart** var: bunlar **pişti kanalları**.
+- Sağda **1 kapalı + 1 açık** kart var: burası normal pişti oynanan **yer**.
+- Yere açılan 4 kartın 3'ü aynı olamaz.
+- Her oyuncuya **4'er kart** dağıtılır. Eller bitince deste bitene kadar yeniden dağıtılır.
 
-Telefondan denemek için: `npm run dev -- --host` çalıştır, çıkan `Network:` adresini aynı Wi-Fi'deki telefonun tarayıcısında aç.
+### Pişti Kanalları
+- Kanala **sadece pişti yapılır**: kanaldaki kartın aynısını atarsın (7'ye 7, kıza kız).
+- Kanala başka kart atılamaz. Vale de kanaldaki kartı almaz, sadece valeyle pişti olur.
+- Bir kanala pişti yapılınca o kanal **boş kalır**. Diğerine de pişti yapılana kadar oraya kart atılmaz.
 
-## Android APK
+### Tek Kanal ve Zorunlu Kart
+- İki kanala da pişti yapılınca kanal sayısı **1'e düşer** ve oyun sonuna kadar öyle kalır.
+- Kanal boşalınca **sıradaki oyuncu kanala kart atmak zorundadır**, başka yere oynayamaz.
+- Tek kanala pişti yapılıp kanal boşaldığında da aynı kural geçerli. Kanal boş kalamaz.
 
-- **İndirme linki (hep son sürüm):** https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk
-- `main` dalına her push'ta GitHub Actions APK'yı otomatik derler ve **Son Sürüm** olarak yayınlar (`.github/workflows/android.yml`). Derleme ~5 dakika sürer.
-- Uygulama web oyununu [Capacitor](https://capacitorjs.com) ile Android'e sarar (`android/` klasörü, `capacitor.config.ts`).
-- **İmza anahtarı** depoda değil: `../imza-anahtari/` klasöründe ve GitHub secrets'ta (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`). Kaybolursa telefonlardaki uygulama güncellenemez, silip yeniden kurmak gerekir.
-- Telefona kurarken "bilinmeyen kaynaklara izin ver" ve Play Protect uyarısı çıkabilir: "Yine de yükle".
+### Yer
+- Normal pişti gibi: en üstteki kartın aynısını atarsan ya da **vale** atarsan yerdeki bütün kartları alırsın.
+- Yerde **tek kart** varken aynısını atarsan: **PİŞTİ!**
 
----
-
-## Oyun kuralları
-
-Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
-
-### Açılış
-1. Yere **2 açık kart** yan yana konur → bunlara **pişti kanalları** denir.
-2. Yanına **1 kapalı**, üstüne **1 açık** kart konur → burası **normal alan** (normal piştideki orta).
-3. Yere açılan 4 karttan (kapalı dahil) **3'ü aynı olamaz.** Olursa kartlar yeniden karılır.
-4. 2 oyuncuya **4'er kart** dağıtılır. Eller bitince deste bitene kadar yeniden 4'er dağıtılır.
-5. Oyuna **ilk kart dağıtılan oyuncu** başlar.
-
-### Pişti kanalları
-- Kanala **sadece pişti yapılabilir**: kanaldaki kartla aynı kart atılır (3'e 3, valeye vale). Kanala başka kart atılamaz; vale de kanaldaki kartı **almaz**, sadece valeyle pişti olur.
-- İki kanaldan birine pişti yapılınca o kanal **boş kalır**. Diğerine de pişti yapılana kadar oraya kart atılmaz.
-- İki kanal da boşalınca kanal sayısı **kalıcı olarak 1'e düşer** ve **sıradaki oyuncu kanala bir kart atmak zorundadır** (başka yere oynayamaz, herhangi bir kart olabilir).
-- Tek kanala pişti yapılıp boşaldığında da sıradaki oyuncu yine doldurmak zorundadır. Kanal boş kalamaz.
-- Oyuncular her turda kanala (pişti yapabiliyorsa) veya normal alana, istediği yere oynar.
-
-### Normal alan
-- Normal pişti gibi: aynı kartla veya **vale** ile yerdeki tüm kartlar alınır.
-- Yerde tek kart varken aynı kartla alınırsa **pişti**.
-
-### Puanlama (normal pişti ile aynı)
+### Puanlar
 | | Puan |
-|---|---|
-| Pişti (kanalda veya normal alanda) | 10 |
-| Vale ile vale piştisi | 20 |
-| En çok kart toplayan (eşitlikte kimse) | 3 |
-| Sinek 2 (♣2) | 2 |
-| Karo 10 (♦10) | 3 |
-| Her as | 1 |
-| Her vale | 1 |
+|---|:---:|
+| Pişti (kanalda veya yerde) | **10** |
+| Vale ile vale piştisi | **20** |
+| En çok kart toplayan | **3** |
+| Karo 10 (♦10) | **3** |
+| Sinek 2 (♣2) | **2** |
+| Her as ve her vale | **1** |
 
-- Oyun sonunda yerde kalan kartlar (kanaldakiler dahil) **en son kart alan** oyuncuya gider.
-- 52 kart bitince puanlar sayılır, en çok puanı alan **o oyunu kazanır**.
-- Maç: başta seçilir. **1, 3 veya 5 oyun** alan kazanır. Her oyunda başlayan oyuncu değişir.
+- Oyun sonunda yerde kalan kartlar **en son kart alan** oyuncuya gider.
+- Deste bitince en çok puanı olan oyunu kazanır. Maçı, seçilen sayıda (1, 3 veya 5) oyunu ilk alan kazanır.
 
 ---
 
-## Verilen kararlar
+<div align="center">
 
-- **Platform:** Telefonda tarayıcıdan açılan web oyunu (PWA). Mağaza gerekmez, link ile paylaşılır, ana ekrana eklenebilir. Sonradan gerçek uygulamaya çevrilebilir.
-- **Teknoloji:** React + TypeScript + Vite.
-- **Online:** Firebase (ücretsiz, sunucu yok). Oda kodu ile arkadaş davet edilecek. *(henüz yapılmadı)*
-- **Görünüm:** Kahvehane masası: yeşil çuha, ahşap çerçeve.
-- **Oyuncu sayısı:** Şimdilik 2 kişi. İleride 3–4 kişi eklenebilir (motor buna göre yazıldı).
-- **Bilgisayara karşı oynama:** Var.
+**[⬇️ Hemen İndir ve Oyna](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)**
 
-## Kod yapısı
+<sub>Geliştirme notları için: [GELISTIRME.md](GELISTIRME.md)</sub>
 
-| Dosya | Ne yapar |
-|---|---|
-| `src/game/engine.ts` | Oyun kuralları: dağıtım, geçerli hamleler, pişti, kanallar, puanlama |
-| `src/game/bot.ts` | Bilgisayar rakibi (çıkan kartları sayar, rakibe pişti fırsatı vermemeye çalışır) |
-| `src/components/Game.tsx` | Oyun ekranı: masa, eller, sıra, sonuç penceresi |
-| `src/components/PlayingCard.tsx` | İskambil kartı görünümü |
-| `src/App.tsx` | Ana menü |
-| `src/components/HowToPlay.tsx` | "Nasıl Oynanır?" ekranı (kurallar ve puanlar) |
-| `src/index.css` | Tüm görünüm (masa, kartlar, animasyonlar) |
-| `android/`, `capacitor.config.ts` | Android uygulaması |
-| `.github/workflows/android.yml` | APK otomatik derleme |
-
-## Yapılacaklar
-
-- [x] Oyun motoru ve kurallar
-- [x] Bilgisayara karşı oynama
-- [x] Kahvehane masası görünümü
-- [x] "Nasıl Oynanır?" ekranı (ana menüden)
-- [ ] Arkadaşla online oynama (Firebase, oda kodu)
-- [ ] Ana ekrana eklenebilir uygulama (PWA simgesi, çevrimdışı çalışma)
-- [ ] Kart animasyonları ve ses efektleri
-- [ ] 3–4 kişilik oyun
-- [x] Android APK (GitHub Actions ile otomatik)
-- [ ] İnternette yayınlama (arkadaşlara web linki)
-
-## Açık sorular
-
-- 3–4 kişide kurallar nasıl olacak? (kaçar kart dağıtılacak, eşli mi oynanacak?)
+</div>
