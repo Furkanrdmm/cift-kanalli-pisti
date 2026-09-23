@@ -13,7 +13,7 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 
 **[⬇️ Oyunu indirmek için tıklayın](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)**
 
-<sub>Ücretsiz · 3 MB · Android 7 ve üzeri</sub>
+<sub>Ücretsiz · 5 MB · Android 7 ve üzeri</sub>
 
 </div>
 
