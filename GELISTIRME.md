@@ -52,6 +52,8 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 ### Normal alan
 - Normal pişti gibi: aynı kartla veya **vale** ile yerdeki tüm kartlar alınır.
 - Yerde tek kart varken aynı kartla alınırsa **pişti**.
+- Yer alınıp **boş kalırsa** sıradaki oyuncu **mecburen yere kart atar**, kanala pişti yapamaz. Bu kural oyunun başından sonuna geçerli (kodda `mustFill`).
+- *Düzeltme (2026-09-23):* Önceden bu zorunluluk sadece kanallar bittikten sonra uygulanıyordu. Abim fark etti, düzeltildi.
 
 ### Puanlama (normal pişti ile aynı)
 | | Puan |
@@ -84,6 +86,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 | Dosya | Ne yapar |
 |---|---|
 | `src/game/engine.ts` | Oyun kuralları: dağıtım, geçerli hamleler, pişti, kanallar, puanlama |
+| `src/game/save.ts` | Yarım kalan maçı telefona kaydetme (Oyuna Devam Et) |
 | `src/game/bot.ts` | Bilgisayar rakibi (çıkan kartları sayar, rakibe pişti fırsatı vermemeye çalışır) |
 | `src/components/Game.tsx` | Oyun ekranı: masa, eller, sıra, sonuç penceresi |
 | `src/components/PlayingCard.tsx` | İskambil kartı görünümü |
@@ -100,6 +103,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - [x] Bilgisayara karşı oynama
 - [x] Kahvehane masası görünümü
 - [x] "Nasıl Oynanır?" ekranı (ana menüden)
+- [x] Yarım kalan maçı kaydetme, menüde "Oyuna Devam Et"
 - [ ] Arkadaşla online oynama (Firebase, oda kodu)
 - [ ] Ana ekrana eklenebilir uygulama (PWA simgesi, çevrimdışı çalışma)
 - [ ] Kart animasyonları ve ses efektleri

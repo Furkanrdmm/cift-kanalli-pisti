@@ -70,6 +70,7 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 ### Yer
 - Normal pişti gibi: en üstteki kartın aynısını atarsan ya da **vale** atarsan yerdeki bütün kartları alırsın.
 - Yerde **tek kart** varken aynısını atarsan: **PİŞTİ!**
+- Yer alınıp **boş kalırsa**, sıradaki oyuncu **mecburen yere kart atar**. O el kanala pişti yapamaz.
 
 ### Puanlar
 | | Puan |

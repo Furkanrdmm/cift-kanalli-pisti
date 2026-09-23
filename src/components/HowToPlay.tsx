@@ -90,6 +90,9 @@ export function HowToPlay({ onBack }: { onBack: () => void }) {
                 Yerde <b>tek kart</b> varken aynısını atarsan: <b>PİŞTİ!</b>
               </li>
               <li>Alamıyorsan kartın yerde kalır.</li>
+              <li>
+                Yer alınıp <b>boş kalırsa</b>, sıradaki oyuncu <b>mecburen yere kart atar</b>. O el kanala pişti yapamaz.
+              </li>
             </ul>
           </section>
 

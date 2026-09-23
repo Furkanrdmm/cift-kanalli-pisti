@@ -208,14 +208,13 @@ export function applyMove(prev: GameState, player: number, move: Move): GameStat
     }
   }
 
-  // İki yer aşamasında boş kalan yer doldurulmak zorunda (önce yeni açılan 2. yer)
+  // Boş kalan yer doldurulmak zorunda: sıradaki oyuncu başka yere (kanala da) oynayamaz.
+  // İki yer boşsa önce yeni açılan 2. yer doldurulur.
   s.mustFill = null
-  if (channelsDone(s)) {
-    for (let i = s.piles.length - 1; i >= 0; i--) {
-      if (s.piles[i].length === 0) {
-        s.mustFill = i
-        break
-      }
+  for (let i = s.piles.length - 1; i >= 0; i--) {
+    if (s.piles[i].length === 0) {
+      s.mustFill = i
+      break
     }
   }
   return s

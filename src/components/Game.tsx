@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { type Card, type GameEvent, type GameState, type Move, type Target, allTargets, applyMove, channelsDone, isLegal, newGame, score } from '../game/engine'
 import { chooseMove } from '../game/bot'
+import { type SavedMatch, clearMatch, saveMatch } from '../game/save'
 import { PlayingCard } from './PlayingCard'
 
 const HUMAN = 0
@@ -34,12 +35,13 @@ function describe(e: GameEvent, pileCount: number): string {
 
 interface Props {
   target: number
+  resume?: SavedMatch | null
   onExit: () => void
 }
 
-export function Game({ target, onExit }: Props) {
-  const [game, setGame] = useState<GameState>(() => newGame(2, HUMAN))
-  const [wins, setWins] = useState([0, 0])
+export function Game({ target, resume, onExit }: Props) {
+  const [game, setGame] = useState<GameState>(() => resume?.game ?? newGame(2, HUMAN))
+  const [wins, setWins] = useState(() => resume?.wins ?? [0, 0])
   const [selected, setSelected] = useState<string | null>(null)
   const [toast, setToast] = useState<GameEvent | null>(null)
 
@@ -53,6 +55,12 @@ export function Game({ target, onExit }: Props) {
       if (a !== b) setWins((w) => w.map((n, i) => n + (i === (a > b ? 0 : 1) ? 1 : 0)))
     }
   }
+
+  // Her hamlede kaydet; maç bittiyse kaydı sil
+  useEffect(() => {
+    if (wins.some((w) => w >= target)) clearMatch()
+    else saveMatch(target, wins, game)
+  }, [game, wins, target])
 
   // Bilgisayarın sırası
   useEffect(() => {
@@ -89,7 +97,8 @@ export function Game({ target, onExit }: Props) {
   let status: string
   if (game.finished) status = 'Oyun bitti'
   else if (game.turn === BOT) status = 'Bilgisayar düşünüyor…'
-  else if (game.mustFill !== null) status = `${game.mustFill + 1}. yer boş! Oraya bir kart atmak zorundasın`
+  else if (game.mustFill !== null)
+    status = game.piles.length === 1 ? 'Yer boş! Yere bir kart atmak zorundasın' : `${game.mustFill + 1}. yer boş! Oraya bir kart atmak zorundasın`
   else if (selected) status = 'Nereye atacaksın? Parlayan yere dokun'
   else status = 'Sıra sende — bir kart seç'
 
