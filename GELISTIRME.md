@@ -22,6 +22,7 @@ Telefondan denemek için: `npm run dev -- --host` çalıştır, çıkan `Network
 - Uygulama web oyununu [Capacitor](https://capacitorjs.com) ile Android'e sarar (`android/` klasörü, `capacitor.config.ts`).
 - **İmza anahtarı** depoda değil: `../imza-anahtari/` klasöründe ve GitHub secrets'ta (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`). Kaybolursa telefonlardaki uygulama güncellenemez, silip yeniden kurmak gerekir.
 - Telefona kurarken "bilinmeyen kaynaklara izin ver" ve Play Protect uyarısı çıkabilir: "Yine de yükle".
+- **Uygulama simgesi ve açılış ekranı:** kaynağı `assets/build-icons.mjs`. Değiştirdikten sonra: `node assets/build-icons.mjs && npx capacitor-assets generate --android --iconBackgroundColor "#1f6b3a" --splashBackgroundColor "#3e2210"`
 
 ---
 
@@ -86,6 +87,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 | `src/index.css` | Tüm görünüm (masa, kartlar, animasyonlar) |
 | `android/`, `capacitor.config.ts` | Android uygulaması |
 | `.github/workflows/android.yml` | APK otomatik derleme |
+| `assets/` | Uygulama simgesi ve açılış ekranı kaynakları |
 
 ## Yapılacaklar
 
@@ -98,6 +100,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - [ ] Kart animasyonları ve ses efektleri
 - [ ] 3–4 kişilik oyun
 - [x] Android APK (GitHub Actions ile otomatik)
+- [x] Uygulama simgesi ve açılış ekranı
 - [ ] İnternette yayınlama (arkadaşlara web linki)
 
 ## Açık sorular

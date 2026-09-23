@@ -16,12 +16,14 @@
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^8.5.2",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "oxlint": "^1.81.0",
+    "sharp": "^0.35.4",
     "typescript": "~6.0.2",
     "vite": "^8.3.0"
   }
