@@ -5,6 +5,15 @@ Her sürüm GitHub'da otomatik APK olarak yayınlanır ("Son Sürüm #numara").
 
 ---
 
+## Yayınlanmadı: iPhone / web sürümü
+
+- Web sürümü GitHub Pages'te: https://furkanrdmm.github.io/cift-kanalli-pisti/ (her push'ta kendiliğinden güncellenir)
+- iPhone'da Safari → Paylaş → "Ana Ekrana Ekle" ile uygulama gibi tam ekran açılır (simge ve manifest eklendi)
+- iPhone Safari'de menüde "Uygulama gibi oyna" ipucu (kapatılabilir)
+- Repo sayfasına "iPhone'da Oyna" butonu ve kurulum adımları
+
+---
+
 ## v1.1 — Sesler, ayarlar, istatistikler, görsel yenileme (2026-09-23)
 
 APK: Son Sürüm #13

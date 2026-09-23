@@ -10,10 +10,14 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 <br>
 
 [![Android İçin İndir](https://img.shields.io/badge/Android%20İçin%20İndir-APK-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)
+&nbsp;
+[![iPhone'da Oyna](https://img.shields.io/badge/iPhone'da%20Oyna-Safari-000000?style=for-the-badge&logo=apple&logoColor=white)](https://furkanrdmm.github.io/cift-kanalli-pisti/)
 
-**[⬇️ Oyunu indirmek için tıklayın](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)**
+**[⬇️ Android: Oyunu indirmek için tıklayın](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)**
+<br>
+**[🍎 iPhone: Oyunu açmak için tıklayın](https://furkanrdmm.github.io/cift-kanalli-pisti/)**
 
-<sub>Ücretsiz · 5 MB · Android 7 ve üzeri</sub>
+<sub>Ücretsiz · Android 7 ve üzeri (5 MB) · iPhone ve bilgisayarda tarayıcıdan</sub>
 
 </div>
 
@@ -36,12 +40,27 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 
 ## 📲 Nasıl Kurulur?
 
-1. Yukarıdaki **"Oyunu indirmek için tıklayın"** linkine telefondan dokun, APK dosyası iner.
+### 🤖 Android'de
+
+1. Yukarıdaki **"Android: Oyunu indirmek için tıklayın"** linkine telefondan dokun, APK dosyası iner.
 2. İnen dosyayı aç.
 3. Telefon *"Bilinmeyen kaynaklardan yüklemeye izin ver"* diye sorarsa **izin ver**.
 4. *Play Protect* uyarısı çıkarsa **"Yine de yükle"** de. Oyun Play Store'da olmadığı için bu uyarı normal.
 
 > **Yeni sürüm çıkınca:** Aynı linkten tekrar indirip kurman yeterli. Eski sürümün üstüne kurulur.
+
+### 🍎 iPhone'da
+
+1. iPhone'dan **Safari** ile **[furkanrdmm.github.io/cift-kanalli-pisti](https://furkanrdmm.github.io/cift-kanalli-pisti/)** adresini aç.
+2. Alttaki **Paylaş** düğmesine (kare içinde yukarı ok ⬆︎) dokun.
+3. Aşağı kaydırıp **"Ana Ekrana Ekle"** de, sonra **Ekle**.
+4. Ana ekranda oyunun simgesi çıkar. Oradan açınca uygulama gibi tam ekran açılır.
+
+> Oyun kendiliğinden güncellenir, bir şey indirmene gerek yok. iPhone tarayıcıda titreşime izin vermediği için titreşim çalışmaz. Ses gelmiyorsa telefonun yanındaki sessiz düğmesini kontrol et.
+
+### 💻 Bilgisayarda
+
+Aynı adresi ([furkanrdmm.github.io/cift-kanalli-pisti](https://furkanrdmm.github.io/cift-kanalli-pisti/)) herhangi bir tarayıcıda açman yeterli.
 
 ---
 

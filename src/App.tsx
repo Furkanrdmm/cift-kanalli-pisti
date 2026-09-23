@@ -3,6 +3,7 @@ import { Game } from './components/Game'
 import { HowToPlay } from './components/HowToPlay'
 import { SettingsPanel } from './components/SettingsPanel'
 import { StatsScreen } from './components/StatsScreen'
+import { InstallHint } from './components/InstallHint'
 import { applyTheme, useSettings } from './game/settings'
 import { modeLabel, sideShortNames } from './game/players'
 import { type SavedMatch, clearMatch, loadMatch } from './game/save'
@@ -35,6 +36,7 @@ export default function App() {
   return (
     <div className="table">
       <div className="menu">
+        <InstallHint />
         <img className="menu-logo" src="./favicon.svg" alt="" />
         <h1 className="title">
           Çift Kanallı

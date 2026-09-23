@@ -113,6 +113,9 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 | `src/index.css` | Tüm görünüm (masa, kartlar, animasyonlar) |
 | `android/`, `capacitor.config.ts` | Android uygulaması |
 | `.github/workflows/android.yml` | APK otomatik derleme |
+| `.github/workflows/pages.yml` | Web sürümünü her push'ta GitHub Pages'e koyar (iPhone ve tarayıcı) |
+| `public/manifest.webmanifest`, `public/icons/` | Ana ekrana ekleme (PWA) ayarları ve simgeleri |
+| `src/components/InstallHint.tsx` | iPhone Safari'de "Ana Ekrana Ekle" ipucu |
 | `assets/` | Uygulama simgesi ve açılış ekranı kaynakları |
 
 ## Yapılacaklar
@@ -123,7 +126,8 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - [x] "Nasıl Oynanır?" ekranı (ana menüden)
 - [x] Yarım kalan maçı kaydetme, menüde "Oyuna Devam Et"
 - [ ] Arkadaşla online oynama (Firebase, oda kodu)
-- [ ] Ana ekrana eklenebilir uygulama (PWA simgesi, çevrimdışı çalışma)
+- [x] Web sürümü (GitHub Pages) ve ana ekrana eklenebilir uygulama (PWA): iPhone için
+- [ ] Çevrimdışı çalışma (service worker)
 - [x] Animasyonlar: kart dağıtma, kart atma, yeri alma, son atılan kartın parlaması
 - [x] Kartı sürükleyip bırakarak oynama (dokunarak oynama da duruyor)
 - [x] Ses efektleri (telefonda üretilir), titreşim, ayarlar (ses, seviye, titreşim, oyun hızı)
@@ -134,7 +138,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - [x] 3–4 kişilik oyun (4 kişide eşli/tekli)
 - [x] Android APK (GitHub Actions ile otomatik)
 - [x] Uygulama simgesi ve açılış ekranı
-- [ ] İnternette yayınlama (arkadaşlara web linki)
+- [x] İnternette yayınlama: https://furkanrdmm.github.io/cift-kanalli-pisti/
 
 ## Açık sorular
 
