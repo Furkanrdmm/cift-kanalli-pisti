@@ -110,6 +110,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - [ ] Arkadaşla online oynama (Firebase, oda kodu)
 - [ ] Ana ekrana eklenebilir uygulama (PWA simgesi, çevrimdışı çalışma)
 - [x] Animasyonlar: kart dağıtma, kart atma, yeri alma, son atılan kartın parlaması
+- [x] Kartı sürükleyip bırakarak oynama (dokunarak oynama da duruyor)
 - [ ] Ses efektleri, müzik, ayarlar
 - [ ] 3–4 kişilik oyun
 - [x] Android APK (GitHub Actions ile otomatik)

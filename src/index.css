@@ -773,3 +773,26 @@ button {
     animation-duration: 1ms !important;
   }
 }
+
+/* ---------- Sürükle bırak ---------- */
+.card--draggable {
+  touch-action: none; /* sürüklerken sayfa kaymasın */
+}
+
+.drag-card {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  transform: scale(1.08) rotate(-3deg);
+}
+
+.drag-card > .card {
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.55);
+}
+
+.slot--over {
+  transform: scale(1.06);
+  box-shadow: 0 0 0 4px #fff3c4, 0 0 30px rgba(232, 194, 106, 1);
+}

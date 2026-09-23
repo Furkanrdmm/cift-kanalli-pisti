@@ -144,6 +144,10 @@ export function HowToPlay({ onBack }: { onBack: () => void }) {
                 Oynayabileceğin yerler <b className="gold">altın renginde parlar</b>. Oraya dokun.
               </li>
               <li>Tek seçenek varsa karta ikinci kez dokunman yeterli.</li>
+              <li>
+                İstersen karta <b>basılı tutup sürükle</b>, parlayan yerin üstüne bırak. Kartın tek gidebileceği yer varsa yukarı doğru
+                fırlatman yeterli.
+              </li>
               <li>Bir yerin çerçevesi turuncuysa oraya kart atmak zorundasın.</li>
             </ul>
           </section>

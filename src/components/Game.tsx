@@ -142,8 +142,9 @@ export function Game({ target, resume, onExit }: Props) {
     setFlyers([])
   }
 
-  /** Hamleyi animasyonla oynat: kart ele/yere uçar, alınan kartlar toplanır, sonra durum güncellenir */
-  const runMove = async (player: number, move: Move) => {
+  /** Hamleyi animasyonla oynat: kart ele/yere uçar, alınan kartlar toplanır, sonra durum güncellenir.
+   *  from: sürüklenen kartın bırakıldığı yer (yoksa elden başlar) */
+  const runMove = async (player: number, move: Move, from?: Box) => {
     if (busyRef.current || !isLegal(game, player, move)) return
     setBusy(true)
     setSelected(null)
@@ -156,7 +157,7 @@ export function Game({ target, resume, onExit }: Props) {
     const n = ++seq.current
 
     const opp = root.querySelectorAll('[data-opp-card]')
-    const src = (player === HUMAN ? box(`[data-card-id="${card.id}"]`) : boxOf(opp[opp.length - 1], root)) ?? box('[data-deck] .card')!
+    const src = from ?? (player === HUMAN ? box(`[data-card-id="${card.id}"]`) : boxOf(opp[opp.length - 1], root)) ?? box('[data-deck] .card')!
     const slot = box(`[data-target="${targetKey(t)}"]`)!
     let dest: Box
     let rot = 0
@@ -267,12 +268,69 @@ export function Game({ target, resume, onExit }: Props) {
     if (selected && canPlay(t)) runMove(HUMAN, { cardId: selected, target: t })
   }
 
+  // ---- Sürükle bırak: karta basılı tutup yere sürükleyerek oynama ----
+  const [drag, setDrag] = useState<{ id: string; box: Box; over: string | null } | null>(null)
+  const dragStart = useRef<{ id: string; px: number; py: number; ox: number; oy: number; w: number; h: number; moved: boolean } | null>(null)
+
+  const targetAt = (x: number, y: number): Target | null => {
+    const key = document.elementFromPoint(x, y)?.closest('[data-target]')?.getAttribute('data-target')
+    if (!key) return null
+    const [kind, index] = key.split('-')
+    return { kind: kind as Target['kind'], index: Number(index) }
+  }
+  const dragBox = (d: NonNullable<typeof dragStart.current>, x: number, y: number): Box => {
+    const o = rootRef.current!.getBoundingClientRect()
+    return { x: x - o.left - d.ox, y: y - o.top - d.oy, w: d.w, h: d.h }
+  }
+
+  const onHandPointerDown = (e: React.PointerEvent<HTMLDivElement>, card: Card) => {
+    if (!myTurn || e.button > 0) return
+    const r = e.currentTarget.getBoundingClientRect()
+    e.currentTarget.setPointerCapture(e.pointerId)
+    dragStart.current = { id: card.id, px: e.clientX, py: e.clientY, ox: e.clientX - r.left, oy: e.clientY - r.top, w: r.width, h: r.height, moved: false }
+  }
+
+  const onHandPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const d = dragStart.current
+    if (!d) return
+    if (!d.moved && Math.hypot(e.clientX - d.px, e.clientY - d.py) < 8) return // küçük kıpırtı: dokunma say
+    d.moved = true
+    const over = targetAt(e.clientX, e.clientY)
+    setSelected(d.id)
+    setDrag({ id: d.id, box: dragBox(d, e.clientX, e.clientY), over: over ? targetKey(over) : null })
+  }
+
+  const onHandPointerUp = (e: React.PointerEvent<HTMLDivElement>, card: Card) => {
+    const d = dragStart.current
+    dragStart.current = null
+    if (!d) return
+    if (!d.moved) return onCardClick(card)
+
+    let target = targetAt(e.clientX, e.clientY)
+    if (target && !isLegal(game, HUMAN, { cardId: d.id, target })) target = null
+    if (!target && d.py - e.clientY > 60) {
+      // Yukarı fırlatıldı: kartın tek gidebileceği yer varsa oraya
+      const legal = allTargets(game).filter((t) => isLegal(game, HUMAN, { cardId: d.id, target: t }))
+      if (legal.length === 1) target = legal[0]
+    }
+    setDrag(null)
+    if (target) runMove(HUMAN, { cardId: d.id, target }, dragBox(d, e.clientX, e.clientY))
+    else setSelected(null)
+  }
+
+  const onHandPointerCancel = () => {
+    dragStart.current = null
+    setDrag(null)
+    setSelected(null)
+  }
+
   let status: string
   if (game.finished) status = 'Oyun bitti'
   else if (game.turn === BOT) status = 'Bilgisayar düşünüyor…'
   else if (busy) status = ''
   else if (game.mustFill !== null)
     status = game.piles.length === 1 ? 'Yer boş! Yere bir kart atmak zorundasın' : `${game.mustFill + 1}. yer boş! Oraya bir kart atmak zorundasın`
+  else if (drag) status = 'Parlayan yerin üstüne bırak'
   else if (selected) status = 'Nereye atacaksın? Parlayan yere dokun'
   else status = 'Sıra sende — bir kart seç'
 
@@ -290,7 +348,7 @@ export function Game({ target, resume, onExit }: Props) {
         </div>
         <div
           data-target={targetKey(t)}
-          className={'slot slot--pile' + (canPlay(t) ? ' slot--hot' : '') + (must ? ' slot--must' : '')}
+          className={'slot slot--pile' + (canPlay(t) ? ' slot--hot' : '') + (canPlay(t) && drag?.over === targetKey(t) ? ' slot--over' : '') + (must ? ' slot--must' : '')}
           onClick={() => onTargetClick(t)}
         >
           {visible.length === 0 && <span className="slot-text">{must ? 'Kart at' : 'Boş'}</span>}
@@ -352,7 +410,7 @@ export function Game({ target, resume, onExit }: Props) {
                 {shown.channels.map((ch, i) => {
                   const t: Target = { kind: 'channel', index: i }
                   return (
-                    <div key={i} data-target={targetKey(t)} className={'slot' + (canPlay(t) ? ' slot--hot' : '')} onClick={() => onTargetClick(t)}>
+                    <div key={i} data-target={targetKey(t)} className={'slot' + (canPlay(t) ? ' slot--hot' : '') + (canPlay(t) && drag?.over === targetKey(t) ? ' slot--over' : '')} onClick={() => onTargetClick(t)}>
                       {ch ? <PlayingCard card={ch} hidden={hidden.has(ch.id)} /> : <span className="slot-text">Pişti oldu</span>}
                     </div>
                   )
@@ -376,14 +434,24 @@ export function Game({ target, resume, onExit }: Props) {
                 key={c.id}
                 card={c}
                 data-card-id={c.id}
-                hidden={hidden.has(c.id)}
+                hidden={hidden.has(c.id) || drag?.id === c.id}
                 selected={selected === c.id}
                 disabled={!myTurn}
-                onClick={() => onCardClick(c)}
+                className="card--clickable card--draggable"
+                onPointerDown={(e) => onHandPointerDown(e, c)}
+                onPointerMove={onHandPointerMove}
+                onPointerUp={(e) => onHandPointerUp(e, c)}
+                onPointerCancel={onHandPointerCancel}
               />
             ))}
           </div>
         </section>
+
+        {drag && (
+          <div className="drag-card" style={{ left: drag.box.x, top: drag.box.y, width: drag.box.w, height: drag.box.h }}>
+            <PlayingCard card={game.hands[HUMAN].find((c) => c.id === drag.id)} />
+          </div>
+        )}
 
         <FlyLayer flyers={flyers} />
 
