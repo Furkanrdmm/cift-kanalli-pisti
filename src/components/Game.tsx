@@ -518,13 +518,38 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
   }
   const matchOver = wins.some((w) => w >= target)
   const shortNames = game.teams ? ['Biz', 'Onlar'] : online ? names.map((n) => shortName(n)) : sideShortNames(game)
-  // Sıra saat yönünün tersine: senden sonraki oyuncu sağda, en son oynayan solda
-  const opponents = Array.from({ length: game.playerCount - 1 }, (_, i) => game.playerCount - 1 - i)
   const partner = game.teams ? game.teams[sideOf(game, HUMAN)].find((p) => p !== HUMAN) : undefined
+
+  // Masa düzeni: sen alttasın, sıra saat yönünün tersine döner.
+  // 2 kişi: rakip karşıda. 3 kişi: 2. oyuncu sağda, 3. karşıda. 4 kişi: 2. sağda, 3. karşıda, 4. solda.
+  const multi = game.playerCount > 2
+  const topSeat = multi ? 2 : 1
+  const rightSeat = multi ? 1 : null
+  const leftSeat = game.playerCount === 4 ? 3 : null
+
+  const renderOpponent = (p: number, side: boolean) => (
+    <div
+      key={p}
+      data-seat={p}
+      className={
+        'player ' +
+        (side ? 'player--side' : 'player--top') +
+        (game.turn === p && !game.finished ? ' player--active' : '') +
+        (p === partner ? ' player--partner' : '')
+      }
+    >
+      <div className={'hand hand--opponent' + (side ? ' hand--side' : '')}>
+        {shown.hands[p].map((c) => (
+          <PlayingCard key={c.id} faceDown small hidden={hidden.has(c.id)} data-opp-card="" />
+        ))}
+      </div>
+      <PlayerInfo name={names[p]} game={shown} p={p} tag={online ? (online.bots[p] ? '🤖' : online.offline[p] ? 'bağlantı yok' : null) : null} />
+    </div>
+  )
 
   return (
     <div className="table">
-      <div className="game" ref={rootRef}>
+      <div className={multi ? 'game game--multi' : 'game'} ref={rootRef}>
         <div ref={measureRef} className="card card-measure" />
         <header className="topbar">
           <div className="topbar-left">
@@ -549,43 +574,32 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
           </div>
         </header>
 
-        <section className={`opponents opponents--${opponents.length}`}>
-          {opponents.map((p) => (
-            <div
-              key={p}
-              data-seat={p}
-              className={'player player--top' + (game.turn === p && !game.finished ? ' player--active' : '') + (p === partner ? ' player--partner' : '')}
-            >
-              <div className="hand hand--opponent">
-                {shown.hands[p].map((c) => (
-                  <PlayingCard key={c.id} faceDown small hidden={hidden.has(c.id)} data-opp-card="" />
-                ))}
-              </div>
-              <PlayerInfo name={names[p]} game={shown} p={p} tag={online ? (online.bots[p] ? '🤖' : online.offline[p] ? 'bağlantı yok' : null) : null} />
-            </div>
-          ))}
-        </section>
+        <section className="opponents">{renderOpponent(topSeat, false)}</section>
 
-        <section className="board">
-          {twoPiles ? (
-            renderPile(1)
-          ) : (
-            <div className="zone">
-              <div className="zone-label">Pişti Kanalları</div>
-              <div className="zone-cards">
-                {shown.channels.map((ch, i) => {
-                  const t: Target = { kind: 'channel', index: i }
-                  return (
-                    <div key={i} data-target={targetKey(t)} className={'slot' + (canPlay(t) ? ' slot--hot' : '') + (canPlay(t) && drag?.over === targetKey(t) ? ' slot--over' : '')} onClick={() => onTargetClick(t)}>
-                      {ch ? <PlayingCard card={ch} hidden={hidden.has(ch.id)} /> : <span className="slot-text">Pişti oldu</span>}
-                    </div>
-                  )
-                })}
+        <div className={multi ? 'table-mid' : 'table-mid table-mid--duo'}>
+          {multi && <div className="side side--left">{leftSeat !== null && renderOpponent(leftSeat, true)}</div>}
+          <section className="board">
+            {twoPiles ? (
+              renderPile(1)
+            ) : (
+              <div className="zone">
+                <div className="zone-label">Pişti Kanalları</div>
+                <div className="zone-cards">
+                  {shown.channels.map((ch, i) => {
+                    const t: Target = { kind: 'channel', index: i }
+                    return (
+                      <div key={i} data-target={targetKey(t)} className={'slot' + (canPlay(t) ? ' slot--hot' : '') + (canPlay(t) && drag?.over === targetKey(t) ? ' slot--over' : '')} onClick={() => onTargetClick(t)}>
+                        {ch ? <PlayingCard card={ch} hidden={hidden.has(ch.id)} /> : <span className="slot-text">Pişti oldu</span>}
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
-          )}
-          {renderPile(0)}
-        </section>
+            )}
+            {renderPile(0)}
+          </section>
+          {rightSeat !== null && <div className="side side--right">{renderOpponent(rightSeat, true)}</div>}
+        </div>
 
         <div className="status">
           <div className={'status-main' + (game.mustFill !== null && myTurn ? ' status-main--warn' : '')}>{status}</div>

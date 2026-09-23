@@ -5,13 +5,23 @@ Her sürüm GitHub'da otomatik APK olarak yayınlanır ("Son Sürüm #numara").
 
 ---
 
+## v1.3 — Masa düzeni (2026-09-24)
+
+APK: Son Sürüm #18
+
+- 3 ve 4 kişilik oyunda oyuncular masanın etrafında: sen altta, 2. oyuncu sağda, 3. karşıda, 4. solda (sıra saat yönünün tersine)
+- 3-4 kişide ortada kanallar üstte, yer altta; kartlar biraz küçük
+- Online bekleme odası masa şeklinde, boş koltukta **Otur**; eşlide A takımı altın, B takımı mavi
+- Bilgisayarların adı oturduğu koltuğun numarası (Bilgisayar 2, 3, 4)
+- Bekleme odası ve oyun her telefon boyutunda tek ekrana sığar (kayma yok)
+
 ## v1.2 — Arkadaşla online (2026-09-24)
 
 APK: Son Sürüm #17
 
 - Menüde **👥 Arkadaşla Online**: adını yaz, **Oda Kur** (2/3/4 kişi, eşli/tekli, kaç oyun) ya da 4 haneli kodla **Odaya Katıl**
 - Bekleme odası: büyük oda kodu, **Arkadaşlarına gönder** (davet linki `?oda=1234` ile doğrudan katılma), koltuklar, takımlar
-- **Buraya geç**: boş koltuğa geçerek takım seçme
+- **Otur**: bekleme odası masa gibi (1 altta, 2 sağda, 3 karşıda, 4 solda); boş koltuğa oturarak takım seçme
 - 4 kişi eşlide kurucu boş koltuğa **+ Bilgisayar** ekleyebilir (arkadaşınla takım olup bilgisayarlara karşı)
 - Kurucu **Oyunu Başlat** der (en az 2 kişi); boş koltuklara bilgisayar oturur
 - "Nasıl Oynanır?" ekranına online bölümü
@@ -85,6 +95,7 @@ Bu noktada oyun **sessiz** ama oynanış tam. Sonraki büyük adım: sesler, mü
 
 | APK | Tarih | Ne değişti |
 |---|---|---|
+| #18 | 2026-09-24 | Masa düzeni: sağ/karşı/sol oturma, masa şeklinde bekleme odası, ekrana sığma |
 | #17 | 2026-09-24 | Arkadaşla online: oda kodu, 2-4 kişi, eşli, koltuk seçme, bağlantı kopunca bilgisayar |
 | #16 | 2026-09-23 | README: kurulum yönlendirmesi (oyunda değişiklik yok) |
 | #15 | 2026-09-23 | iPhone / web sürümü (GitHub Pages), ana ekrana ekleme |

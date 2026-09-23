@@ -166,7 +166,8 @@ export function HowToPlay({ onBack }: { onBack: () => void }) {
                 dokunur.
               </li>
               <li>
-                Bekleme odasında <b>Buraya geç</b> ile boş bir koltuğa geçebilirsin. Eşli oyunda kiminle takım olacağınızı böyle seçersiniz.
+                Bekleme odasında koltuklar masa gibi dizilir: 1. altta, 2. sağda, 3. karşıda, 4. solda. Boş koltuktaki <b>Otur</b> ile oraya
+                geçersin. Eşli oyunda karşılıklı oturanlar eştir, kiminle takım olacağınızı böyle seçersiniz.
               </li>
               <li>
                 4 kişi eşlide kurucu boş koltuğa <b>+ Bilgisayar</b> ekleyebilir. Arkadaşınla takım olup bilgisayarlara karşı oynayabilirsin.

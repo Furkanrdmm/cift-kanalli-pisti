@@ -8,7 +8,15 @@ import { type Room, type RoomOpts, createRoom, joinRoom, leaveRoom, moveSeat, pu
 import { Game, type OnlineLink } from './Game'
 
 const SITE = 'https://furkanrdmm.github.io/cift-kanalli-pisti/'
-const botName = (i: number) => `Bilgisayar ${i}`
+/** Bilgisayarın adı oturduğu koltuğun numarasıyla aynı (koltuklar 1den başlar) */
+const botName = (i: number) => `Bilgisayar ${i + 1}`
+
+/** Bekleme odasındaki masada koltukların yeri (oyundaki oturma düzeniyle aynı: sıra saat yönünün tersine) */
+const SEAT_POS: Record<number, string[]> = {
+  2: ['bottom', 'top'],
+  3: ['bottom', 'right', 'top'],
+  4: ['bottom', 'right', 'top', 'left'],
+}
 
 interface Props {
   /** Paylaşılan linkten gelen oda kodu (?oda=1234) */
@@ -145,13 +153,16 @@ export function OnlineScreen({ initialCode, onExit }: Props) {
 
     return (
       <Shell
+        lobby
         title="Oda"
         onBack={leave}
         body={
           <>
             <div className="room-code-box">
-              <div className="room-code-label">Oda kodu</div>
-              <div className="room-code">{room.code}</div>
+              <div>
+                <div className="room-code-label">Oda kodu</div>
+                <div className="room-code">{room.code}</div>
+              </div>
               <button className="btn btn--primary room-share" onClick={share}>
                 Arkadaşlarına gönder
               </button>
@@ -161,46 +172,75 @@ export function OnlineScreen({ initialCode, onExit }: Props) {
               {room.opts.players} kişi{room.opts.players === 4 ? (room.opts.teamMode ? ' · eşli' : ' · tekli') : ''} · {room.opts.target} oyun alan kazanır
             </div>
 
-            <div className="seat-list">
+            {/* Masa: 1. koltuk altta, sıra saat yönünün tersine: 2. sağda, 3. karşıda, 4. solda. Karşılıklı oturanlar eştir. */}
+            <div className={`room-table room-table--${room.opts.players}`}>
+              <div className="room-table-felt">
+                {teamRoom ? (
+                  <>
+                    Karşılıklı
+                    <br />
+                    oturanlar eştir
+                  </>
+                ) : (
+                  'Masa'
+                )}
+              </div>
               {seats.map((s, i) => (
-                <div key={i} className={'seat' + (s ? '' : ' seat--empty') + (s?.uid === uid ? ' seat--me' : '')}>
-                  <span className="seat-no">{i + 1}</span>
-                  <span className="seat-name">
-                    {s ? (s.bot ? `🤖 ${s.name}` : s.name) : 'Bekleniyor…'}
-                    {s?.uid === room.host && <small className="seat-host"> kurucu</small>}
-                    {s?.uid === uid && <small className="seat-host"> (sen)</small>}
-                    {!s && room.opts.players > 2 && <small className="seat-empty-note"> gelmezse bilgisayar oturur</small>}
-                  </span>
-                  {/* Boş koltuğa geçerek takım/sıra seçilir */}
-                  {!s && (
-                    <button className="chip-btn" disabled={working} onClick={() => run(() => moveSeat(room.code, i))}>
-                      Buraya geç
-                    </button>
-                  )}
-                  {/* 4 kişi eşli: kurucu rakip koltuklarına bilgisayar oturtup arkadaşıyla takım olabilsin */}
-                  {isHost && teamRoom && !s?.uid && (
-                    <button className="chip-btn" onClick={() => setBotSeat(room.code, i, !s, botName(i))}>
-                      {s ? 'Kaldır' : '+ Bilgisayar'}
-                    </button>
-                  )}
-                  {room.opts.teamMode && room.opts.players === 4 && <span className="seat-team">{i % 2 === 0 ? 'A takımı' : 'B takımı'}</span>}
+                <div
+                  key={i}
+                  className={
+                    `seat seat--pos-${SEAT_POS[room.opts.players][i]}` +
+                    (s ? '' : ' seat--empty') +
+                    (s?.uid === uid ? ' seat--me' : '') +
+                    (teamRoom ? (i % 2 === 0 ? ' seat--team-a' : ' seat--team-b') : '')
+                  }
+                >
+                  <div className="seat-head">
+                    <span className="seat-no">{i + 1}</span>
+                    <span className="seat-name">{s ? (s.bot ? `🤖 ${s.name}` : s.name) : 'Boş'}</span>
+                  </div>
+                  <small className="seat-tags">
+                    {[teamRoom && (i % 2 === 0 ? 'A takımı' : 'B takımı'), s?.uid === room.host && 'kurucu', s?.uid === uid && 'sen']
+                      .filter(Boolean)
+                      .join(' · ') || ' '}
+                  </small>
+                  <div className="seat-actions">
+                    {/* Boş koltuğa geçerek takım/sıra seçilir */}
+                    {!s && (
+                      <button className="chip-btn" disabled={working} onClick={() => run(() => moveSeat(room.code, i))}>
+                        Otur
+                      </button>
+                    )}
+                    {/* 4 kişi eşli: kurucu rakip koltuklarına bilgisayar oturtup arkadaşıyla takım olabilsin */}
+                    {isHost && teamRoom && !s?.uid && (
+                      <button className="chip-btn" onClick={() => setBotSeat(room.code, i, !s, botName(i))}>
+                        {s ? 'Kaldır' : '+ Bilgisayar'}
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
-
-            {isHost ? (
-              <>
-                <button className="btn btn--primary howto-done" disabled={working || humans < 2} onClick={start}>
+            <div className="lobby-footer">
+              {error ? (
+                <p className="room-error">{error}</p>
+              ) : (
+                <p className="room-hint">
+                  {isHost
+                    ? humans < 2
+                      ? 'Arkadaşların odaya girince başlatabilirsin.'
+                      : room.opts.players > 2
+                        ? 'Boş kalan koltuklara bilgisayar oturur.'
+                        : ' '
+                    : 'Kurucunun oyunu başlatması bekleniyor…'}
+                </p>
+              )}
+              {isHost && (
+                <button className="btn btn--primary" disabled={working || humans < 2} onClick={start}>
                   Oyunu Başlat
                 </button>
-                <p className="room-hint">
-                  {humans < 2 ? 'Arkadaşların odaya girince başlatabilirsin.' : 'Boş kalan koltuklara bilgisayar oturur.'}
-                </p>
-              </>
-            ) : (
-              <p className="room-hint">Kurucunun oyunu başlatması bekleniyor…</p>
-            )}
-            {error && <p className="room-error">{error}</p>}
+              )}
+            </div>
           </>
         }
       />
@@ -294,7 +334,7 @@ export function OnlineScreen({ initialCode, onExit }: Props) {
   )
 }
 
-function Shell({ title, onBack, body }: { title: string; onBack: () => void; body: React.ReactNode }) {
+function Shell({ title, onBack, body, lobby }: { title: string; onBack: () => void; body: React.ReactNode; lobby?: boolean }) {
   return (
     <div className="table">
       <div className="howto">
@@ -305,7 +345,7 @@ function Shell({ title, onBack, body }: { title: string; onBack: () => void; bod
           <h2 className="howto-title">{title}</h2>
           <span style={{ width: 38 }} />
         </header>
-        <div className="howto-body online-body">{body}</div>
+        <div className={'howto-body online-body' + (lobby ? ' lobby-body' : '')}>{body}</div>
       </div>
     </div>
   )
