@@ -5,6 +5,9 @@ name: Web (iPhone) Sürümü
 on:
   push:
     branches: [main]
+    # Sadece yazı dosyaları (README, notlar) değiştiyse derleme yapma
+    paths-ignore:
+      - "**.md"
   workflow_dispatch:
 
 permissions:

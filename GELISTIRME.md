@@ -18,7 +18,7 @@ Telefondan denemek için: `npm run dev -- --host` çalıştır, çıkan `Network
 ## Android APK
 
 - **İndirme linki (hep son sürüm):** https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk
-- `main` dalına her push'ta GitHub Actions APK'yı otomatik derler ve **Son Sürüm** olarak yayınlar (`.github/workflows/android.yml`). Derleme ~5 dakika sürer.
+- `main` dalına her push'ta (sadece `.md` dosyaları değiştiyse hariç) GitHub Actions APK'yı otomatik derler ve **Son Sürüm** olarak yayınlar (`.github/workflows/android.yml`). Derleme ~5 dakika sürer.
 - Uygulama web oyununu [Capacitor](https://capacitorjs.com) ile Android'e sarar (`android/` klasörü, `capacitor.config.ts`).
 - **İmza anahtarı** depoda değil: `../imza-anahtari/` klasöründe ve GitHub secrets'ta (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`). Kaybolursa telefonlardaki uygulama güncellenemez, silip yeniden kurmak gerekir.
 - Telefona kurarken "bilinmeyen kaynaklara izin ver" ve Play Protect uyarısı çıkabilir: "Yine de yükle".

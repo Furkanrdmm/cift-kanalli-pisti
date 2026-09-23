@@ -11,13 +11,18 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 
 [![Android İçin İndir](https://img.shields.io/badge/Android%20İçin%20İndir-APK-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)
 &nbsp;
-[![iPhone'da Oyna](https://img.shields.io/badge/iPhone'da%20Oyna-Safari-000000?style=for-the-badge&logo=apple&logoColor=white)](https://furkanrdmm.github.io/cift-kanalli-pisti/)
+[![iPhone'da Oyna](https://img.shields.io/badge/iPhone'da%20Oyna-Kurulum-000000?style=for-the-badge&logo=apple&logoColor=white)](#iphone-kurulum)
 
-**[⬇️ Android: Oyunu indirmek için tıklayın](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)**
+**[⬇️ Android: Oyunu indirmek için tıklayın](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)** · <sub>[kurulum adımları](#android-kurulum)</sub>
 <br>
-**[🍎 iPhone: Oyunu açmak için tıklayın](https://furkanrdmm.github.io/cift-kanalli-pisti/)**
+**[🍎 iPhone: Nasıl kurulacağını görmek için tıklayın](#iphone-kurulum)**
 
 <sub>Ücretsiz · Android 7 ve üzeri (5 MB) · iPhone ve bilgisayarda tarayıcıdan</sub>
+
+<br>
+
+> 📌 **Kurmadan önce lütfen aşağıdaki [Nasıl Kurulur?](#nasil-kurulur) bölümünü okuyun.**
+> Özellikle **iPhone**'da oyunu uygulama gibi kullanmak için birkaç kolay adım var.
 
 </div>
 
@@ -38,7 +43,11 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 
 ---
 
+<a id="nasil-kurulur"></a>
+
 ## 📲 Nasıl Kurulur?
+
+<a id="android-kurulum"></a>
 
 ### 🤖 Android'de
 
@@ -49,9 +58,13 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 
 > **Yeni sürüm çıkınca:** Aynı linkten tekrar indirip kurman yeterli. Eski sürümün üstüne kurulur.
 
+<a id="iphone-kurulum"></a>
+
 ### 🍎 iPhone'da
 
-1. iPhone'dan **Safari** ile **[furkanrdmm.github.io/cift-kanalli-pisti](https://furkanrdmm.github.io/cift-kanalli-pisti/)** adresini aç.
+İndirilecek bir dosya yok. Oyun Safari'de açılır, ana ekrana eklenince uygulama gibi çalışır:
+
+1. iPhone'dan **Safari** ile şu linke dokun: **[🃏 Oyunu aç: furkanrdmm.github.io/cift-kanalli-pisti](https://furkanrdmm.github.io/cift-kanalli-pisti/)** *(Chrome değil, Safari olmalı)*
 2. Alttaki **Paylaş** düğmesine (kare içinde yukarı ok ⬆︎) dokun.
 3. Aşağı kaydırıp **"Ana Ekrana Ekle"** de, sonra **Ekle**.
 4. Ana ekranda oyunun simgesi çıkar. Oradan açınca uygulama gibi tam ekran açılır.
