@@ -9,13 +9,11 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 
 <br>
 
-[![Android İçin İndir](https://img.shields.io/badge/Android%20İçin%20İndir-APK-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)
-&nbsp;
-[![iPhone'da Oyna](https://img.shields.io/badge/iPhone'da%20Oyna-Kurulum-000000?style=for-the-badge&logo=apple&logoColor=white)](#iphone-kurulum)
+[![Android İçin İndir](https://img.shields.io/badge/Android%20İçin%20İndir-APK-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)<br>
+**[⬇️ Oyunu indir](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)** &nbsp;·&nbsp; **[📖 Nasıl kurulur?](#android-kurulum)**
 
-**[⬇️ Android: Oyunu indirmek için tıklayın](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)** · <sub>[kurulum adımları](#android-kurulum)</sub>
-<br>
-**[🍎 iPhone: Nasıl kurulacağını görmek için tıklayın](#iphone-kurulum)**
+[![iPhone'da Oyna](https://img.shields.io/badge/iPhone'da%20Oyna-Kurulum-000000?style=for-the-badge&logo=apple&logoColor=white)](#iphone-kurulum)<br>
+**[📖 Nasıl kurulur? (oyunun linki burada)](#iphone-kurulum)**
 
 <sub>Ücretsiz · Android 7 ve üzeri (5 MB) · iPhone ve bilgisayarda tarayıcıdan</sub>
 
@@ -51,7 +49,7 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 
 ### 🤖 Android'de
 
-1. Yukarıdaki **"Android: Oyunu indirmek için tıklayın"** linkine telefondan dokun, APK dosyası iner.
+1. Sayfanın en üstündeki **"⬇️ Oyunu indir"** linkine telefondan dokun, APK dosyası iner.
 2. İnen dosyayı aç.
 3. Telefon *"Bilinmeyen kaynaklardan yüklemeye izin ver"* diye sorarsa **izin ver**.
 4. *Play Protect* uyarısı çıkarsa **"Yine de yükle"** de. Oyun Play Store'da olmadığı için bu uyarı normal.
