@@ -61,10 +61,11 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 - Kanala başka kart atılamaz. Vale de kanaldaki kartı almaz, sadece valeyle pişti olur.
 - Bir kanala pişti yapılınca o kanal **boş kalır**. Diğerine de pişti yapılana kadar oraya kart atılmaz.
 
-### Tek Kanal ve Zorunlu Kart
-- İki kanala da pişti yapılınca kanal sayısı **1'e düşer** ve oyun sonuna kadar öyle kalır.
-- Kanal boşalınca **sıradaki oyuncu kanala kart atmak zorundadır**, başka yere oynayamaz.
-- Tek kanala pişti yapılıp kanal boşaldığında da aynı kural geçerli. Kanal boş kalamaz.
+### Kanallar Bitince: İki Yer
+- İki kanala da pişti yapılınca kanalların yeri **ikinci bir normal yer** olur.
+- **Sıradaki oyuncu bu yeni yere kart atmak zorundadır**, başka yere oynayamaz.
+- Bundan sonra iki yerden istediğine oynarsın. İkisinde de normal pişti kuralları geçerlidir.
+- Yerlerden biri alınıp **boş kalırsa**, sıradaki oyuncu oraya kart atmak zorundadır. Yer boş kalamaz.
 
 ### Yer
 - Normal pişti gibi: en üstteki kartın aynısını atarsan ya da **vale** atarsan yerdeki bütün kartları alırsın.
@@ -80,7 +81,7 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 | Sinek 2 (♣2) | **2** |
 | Her as ve her vale | **1** |
 
-- Oyun sonunda yerde kalan kartlar **en son kart alan** oyuncuya gider.
+- Oyun sonunda yerlerde kalan bütün kartlar **en son kart alan** oyuncuya gider.
 - Deste bitince en çok puanı olan oyunu kazanır. Maçı, seçilen sayıda (1, 3 veya 5) oyunu ilk alan kazanır.
 
 ---

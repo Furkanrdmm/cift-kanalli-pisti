@@ -40,9 +40,14 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 ### Pişti kanalları
 - Kanala **sadece pişti yapılabilir**: kanaldaki kartla aynı kart atılır (3'e 3, valeye vale). Kanala başka kart atılamaz; vale de kanaldaki kartı **almaz**, sadece valeyle pişti olur.
 - İki kanaldan birine pişti yapılınca o kanal **boş kalır**. Diğerine de pişti yapılana kadar oraya kart atılmaz.
-- İki kanal da boşalınca kanal sayısı **kalıcı olarak 1'e düşer** ve **sıradaki oyuncu kanala bir kart atmak zorundadır** (başka yere oynayamaz, herhangi bir kart olabilir).
-- Tek kanala pişti yapılıp boşaldığında da sıradaki oyuncu yine doldurmak zorundadır. Kanal boş kalamaz.
 - Oyuncular her turda kanala (pişti yapabiliyorsa) veya normal alana, istediği yere oynar.
+
+### Kanallar bitince: iki normal yer
+- İki kanal da pişti olunca kanalların yeri **ikinci bir normal yer** olur (kodda `piles[1]`, ekranda "2. Yer"). Asıl yer "1. Yer".
+- **Sıradaki oyuncu bu yeni yere kart atmak zorundadır** (başka yere oynayamaz, herhangi bir kart olabilir).
+- Bundan sonra iki yerden istediğine oynanır; ikisinde de normal pişti kuralları geçerli (aynı kart / vale ile alma, tek kartta pişti).
+- Bu aşamada **hangi yer boşalırsa boşalsın** sıradaki oyuncu oraya kart atmak zorundadır. Yer boş kalamaz.
+- *Düzeltme (2026-09-23):* İlk sürümde kanalların bitince "tek pişti kanalına" düştüğü yazılmıştı. Bu yanlıştı, kural yukarıdaki gibi düzeltildi.
 
 ### Normal alan
 - Normal pişti gibi: aynı kartla veya **vale** ile yerdeki tüm kartlar alınır.
@@ -59,7 +64,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 | Her as | 1 |
 | Her vale | 1 |
 
-- Oyun sonunda yerde kalan kartlar (kanaldakiler dahil) **en son kart alan** oyuncuya gider.
+- Oyun sonunda yerlerde kalan bütün kartlar (iki yer ve kanallar dahil) **en son kart alan** oyuncuya gider.
 - 52 kart bitince puanlar sayılır, en çok puanı alan **o oyunu kazanır**.
 - Maç: başta seçilir. **1, 3 veya 5 oyun** alan kazanır. Her oyunda başlayan oyuncu değişir.
 

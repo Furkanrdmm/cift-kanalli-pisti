@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { type Card, type GameEvent, type GameState, type Move, type Target, applyMove, isLegal, newGame, score } from '../game/engine'
+import { type Card, type GameEvent, type GameState, type Move, type Target, allTargets, applyMove, channelsDone, isLegal, newGame, score } from '../game/engine'
 import { chooseMove } from '../game/bot'
 import { PlayingCard } from './PlayingCard'
 
@@ -11,20 +11,24 @@ const BOT_DELAY = 900
 const SUIT_SYMBOL = { S: '♠', H: '♥', D: '♦', C: '♣' } as const
 const cardName = (c: Card) => c.rank + SUIT_SYMBOL[c.suit]
 
-function describe(e: GameEvent): string {
+/** Kanallar bitince 2 yer olur: sağdaki asıl yer "1. yer", kanalların yeri "2. yer" */
+const pileName = (index: number, pileCount: number) => (pileCount === 1 ? 'yer' : `${index + 1}. yer`)
+
+function describe(e: GameEvent, pileCount: number): string {
   const who = NAMES[e.player]
   const c = cardName(e.card)
+  const where = e.target.kind === 'pile' ? pileName(e.target.index, pileCount) : 'kanal'
   switch (e.kind) {
     case 'play':
-      return `${who}: ${c} yere atıldı`
+      return `${who}: ${c} → ${where}`
     case 'capture':
-      return `${who}: ${c} ile yeri aldı`
+      return `${who}: ${c} ile ${where} aldı`
     case 'pisti':
       return `${who}: ${c} ile PİŞTİ! +${e.points}`
     case 'channelPisti':
       return `${who}: ${c} ile kanalda PİŞTİ! +${e.points}`
     case 'fill':
-      return `${who}: ${c} kanala kondu`
+      return `${who}: ${c} → boş ${where}`
   }
 }
 
@@ -73,8 +77,7 @@ export function Game({ target, onExit }: Props) {
     if (!myTurn) return
     if (selected !== card.id) return setSelected(card.id)
     // Aynı karta ikinci dokunuş: tek seçenek varsa oyna
-    const targets: Target[] = [{ kind: 'pile' }, ...game.channels.map((_, index) => ({ kind: 'channel' as const, index }))]
-    const legal = targets.filter((t) => isLegal(game, HUMAN, { cardId: card.id, target: t }))
+    const legal = allTargets(game).filter((t) => isLegal(game, HUMAN, { cardId: card.id, target: t }))
     if (legal.length === 1) play({ cardId: card.id, target: legal[0] })
     else setSelected(null)
   }
@@ -86,11 +89,39 @@ export function Game({ target, onExit }: Props) {
   let status: string
   if (game.finished) status = 'Oyun bitti'
   else if (game.turn === BOT) status = 'Bilgisayar düşünüyor…'
-  else if (game.mustFillChannel) status = 'Kanal boş! Kanala bir kart atmak zorundasın'
+  else if (game.mustFill !== null) status = `${game.mustFill + 1}. yer boş! Oraya bir kart atmak zorundasın`
   else if (selected) status = 'Nereye atacaksın? Parlayan yere dokun'
   else status = 'Sıra sende — bir kart seç'
 
-  const pileVisible = game.pile.slice(-3)
+  const twoPiles = channelsDone(game)
+  const renderPile = (index: number) => {
+    const pile = game.piles[index]
+    const t: Target = { kind: 'pile', index }
+    const must = game.mustFill === index
+    const visible = pile.slice(-3)
+    return (
+      <div className="zone">
+        <div className="zone-label">
+          {twoPiles ? `${index + 1}. Yer` : 'Yer'} {pile.length > 0 && <small>({pile.length})</small>}
+        </div>
+        <div className={'slot slot--pile' + (canPlay(t) ? ' slot--hot' : '') + (must ? ' slot--must' : '')} onClick={() => onTargetClick(t)}>
+          {visible.length === 0 && <span className="slot-text">{must ? 'Kart at' : 'Boş'}</span>}
+          {visible.map((c, i) => {
+            const idx = pile.length - visible.length + i
+            const rot = ((idx * 37) % 17) - 8
+            return (
+              <PlayingCard
+                key={c.id}
+                card={c}
+                faceDown={index === 0 && idx < game.hiddenInPile}
+                style={{ position: 'absolute', transform: `rotate(${rot}deg) translate(${i * 3}px, ${i * 2}px)` }}
+              />
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
   const matchOver = wins.some((w) => w >= target)
 
   return (
@@ -121,49 +152,29 @@ export function Game({ target, onExit }: Props) {
         </section>
 
         <section className="board">
-          <div className="zone">
-            <div className="zone-label">{game.channelMode === 'double' ? 'Pişti Kanalları' : 'Pişti Kanalı'}</div>
-            <div className="zone-cards">
-              {game.channels.map((ch, i) => {
-                const t: Target = { kind: 'channel', index: i }
-                const hot = canPlay(t)
-                const mustFill = game.mustFillChannel && ch === null
-                return (
-                  <div
-                    key={i}
-                    className={'slot' + (hot ? ' slot--hot' : '') + (mustFill ? ' slot--must' : '')}
-                    onClick={() => onTargetClick(t)}
-                  >
-                    {ch ? <PlayingCard card={ch} /> : <span className="slot-text">{mustFill ? 'Kart at' : 'Pişti oldu'}</span>}
-                  </div>
-                )
-              })}
+          {twoPiles ? (
+            renderPile(1)
+          ) : (
+            <div className="zone">
+              <div className="zone-label">Pişti Kanalları</div>
+              <div className="zone-cards">
+                {game.channels.map((ch, i) => {
+                  const t: Target = { kind: 'channel', index: i }
+                  return (
+                    <div key={i} className={'slot' + (canPlay(t) ? ' slot--hot' : '')} onClick={() => onTargetClick(t)}>
+                      {ch ? <PlayingCard card={ch} /> : <span className="slot-text">Pişti oldu</span>}
+                    </div>
+                  )
+                })}
+              </div>
             </div>
-          </div>
-
-          <div className="zone">
-            <div className="zone-label">Yer {game.pile.length > 0 && <small>({game.pile.length})</small>}</div>
-            <div className={'slot slot--pile' + (canPlay({ kind: 'pile' }) ? ' slot--hot' : '')} onClick={() => onTargetClick({ kind: 'pile' })}>
-              {pileVisible.length === 0 && <span className="slot-text">Boş</span>}
-              {pileVisible.map((c, i) => {
-                const idx = game.pile.length - pileVisible.length + i
-                const rot = ((idx * 37) % 17) - 8
-                return (
-                  <PlayingCard
-                    key={c.id}
-                    card={c}
-                    faceDown={idx < game.hiddenInPile}
-                    style={{ position: 'absolute', transform: `rotate(${rot}deg) translate(${i * 3}px, ${i * 2}px)` }}
-                  />
-                )
-              })}
-            </div>
-          </div>
+          )}
+          {renderPile(0)}
         </section>
 
         <div className="status">
-          <div className={'status-main' + (game.mustFillChannel && myTurn ? ' status-main--warn' : '')}>{status}</div>
-          {game.lastEvent && <div className="status-last">{describe(game.lastEvent)}</div>}
+          <div className={'status-main' + (game.mustFill !== null && myTurn ? ' status-main--warn' : '')}>{status}</div>
+          {game.lastEvent && <div className="status-last">{describe(game.lastEvent, game.piles.length)}</div>}
         </div>
 
         <section className={'player player--bottom' + (myTurn ? ' player--active' : '')}>

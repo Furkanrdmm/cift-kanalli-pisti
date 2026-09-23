@@ -9,7 +9,7 @@ export interface Card {
   rank: Rank
 }
 
-export type Target = { kind: 'pile' } | { kind: 'channel'; index: number }
+export type Target = { kind: 'pile'; index: number } | { kind: 'channel'; index: number }
 
 export interface Move {
   cardId: string
@@ -22,6 +22,7 @@ export interface GameEvent {
   player: number
   card: Card
   kind: EventKind
+  target: Target
   points: number // pişti puanı (varsa)
 }
 
@@ -29,11 +30,11 @@ export interface GameState {
   playerCount: number
   deck: Card[]
   hands: Card[][]
-  /** Pişti kanalları. Başta 2 slot, ikisi de pişti olunca 1 slota düşer. null = boş */
+  /** Pişti kanalları: başta 2 slot (null = pişti olmuş, boş). İkisi de bitince [] olur. */
   channels: (Card | null)[]
-  channelMode: 'double' | 'single'
-  /** Normal alan. pile[0] başlangıçta kapalı karttır. */
-  pile: Card[]
+  /** Normal oyun yerleri. Başta 1 tane; kanallar bitince kanalın yeri 2. yer olur. */
+  piles: Card[][]
+  /** piles[0]'ın altındaki kapalı kart sayısı */
   hiddenInPile: number
   captured: Card[][]
   pistiPoints: number[]
@@ -41,8 +42,8 @@ export interface GameState {
   turn: number
   starter: number
   lastCapturer: number | null
-  /** Kanal boşaldı, sıradaki oyuncu kanala kart atmak zorunda */
-  mustFillChannel: boolean
+  /** Boş kalan yer: sıradaki oyuncu buraya kart atmak zorunda (null = zorunluluk yok) */
+  mustFill: number | null
   lastEvent: GameEvent | null
   finished: boolean
 }
@@ -84,8 +85,7 @@ export function newGame(playerCount = 2, starter = 0): GameState {
     deck,
     hands: Array.from({ length: playerCount }, () => []),
     channels: [ch1, ch2],
-    channelMode: 'double',
-    pile: [hidden, open],
+    piles: [[hidden, open]],
     hiddenInPile: 1,
     captured: Array.from({ length: playerCount }, () => []),
     pistiPoints: Array(playerCount).fill(0),
@@ -93,7 +93,7 @@ export function newGame(playerCount = 2, starter = 0): GameState {
     turn: starter,
     starter,
     lastCapturer: null,
-    mustFillChannel: false,
+    mustFill: null,
     lastEvent: null,
     finished: false,
   }
@@ -109,8 +109,13 @@ function deal(s: GameState) {
   }
 }
 
-export function pileTop(s: GameState): Card | null {
-  return s.pile.length ? s.pile[s.pile.length - 1] : null
+export function pileTop(pile: Card[]): Card | null {
+  return pile.length ? pile[pile.length - 1] : null
+}
+
+/** Kanallar bitti mi? (iki normal yerle oynanan aşama) */
+export function channelsDone(s: GameState): boolean {
+  return s.channels.length === 0
 }
 
 export function isLegal(s: GameState, player: number, move: Move): boolean {
@@ -118,26 +123,27 @@ export function isLegal(s: GameState, player: number, move: Move): boolean {
   const card = s.hands[player].find((c) => c.id === move.cardId)
   if (!card) return false
   const t = move.target
-  if (s.mustFillChannel) return t.kind === 'channel' && s.channels[t.index] === null
-  if (t.kind === 'pile') return true
+  if (s.mustFill !== null) return t.kind === 'pile' && t.index === s.mustFill
+  if (t.kind === 'pile') return t.index >= 0 && t.index < s.piles.length
   const ch = s.channels[t.index]
   // Kanala sadece pişti yapılabilir: aynı kart (vale de sadece valeyi alır)
   return !!ch && ch.rank === card.rank
 }
 
+export function allTargets(s: GameState): Target[] {
+  return [
+    ...s.piles.map((_, index) => ({ kind: 'pile' as const, index })),
+    ...s.channels.map((_, index) => ({ kind: 'channel' as const, index })),
+  ]
+}
+
 export function legalMoves(s: GameState, player: number): Move[] {
   const moves: Move[] = []
   for (const card of s.hands[player]) {
-    if (s.mustFillChannel) {
-      s.channels.forEach((ch, i) => {
-        if (ch === null) moves.push({ cardId: card.id, target: { kind: 'channel', index: i } })
-      })
-      continue
+    for (const target of allTargets(s)) {
+      const m = { cardId: card.id, target }
+      if (isLegal(s, player, m)) moves.push(m)
     }
-    moves.push({ cardId: card.id, target: { kind: 'pile' } })
-    s.channels.forEach((ch, i) => {
-      if (ch && ch.rank === card.rank) moves.push({ cardId: card.id, target: { kind: 'channel', index: i } })
-    })
   }
   return moves
 }
@@ -149,11 +155,7 @@ export function applyMove(prev: GameState, player: number, move: Move): GameStat
   const card = hand.splice(hand.findIndex((c) => c.id === move.cardId), 1)[0]
   const t = move.target
 
-  if (s.mustFillChannel && t.kind === 'channel') {
-    s.channels[t.index] = card
-    s.mustFillChannel = false
-    s.lastEvent = { player, card, kind: 'fill', points: 0 }
-  } else if (t.kind === 'channel') {
+  if (t.kind === 'channel') {
     const target = s.channels[t.index]!
     const points = card.rank === 'J' ? 20 : 10
     s.captured[player].push(target, card)
@@ -161,28 +163,29 @@ export function applyMove(prev: GameState, player: number, move: Move): GameStat
     s.pistiCount[player]++
     s.channels[t.index] = null
     s.lastCapturer = player
-    s.lastEvent = { player, card, kind: 'channelPisti', points }
+    s.lastEvent = { player, card, kind: 'channelPisti', target: t, points }
     if (s.channels.every((c) => c === null)) {
-      // İki kanal da pişti oldu → artık tek kanal, sıradaki oyuncu doldurmak zorunda
-      s.channelMode = 'single'
-      s.channels = [null]
-      s.mustFillChannel = true
+      // İki kanal da pişti oldu → kanalın yeri artık 2. normal yer
+      s.channels = []
+      s.piles.push([])
     }
   } else {
-    const top = pileTop(s)
+    const pile = s.piles[t.index]
+    const top = pileTop(pile)
     if (top && (top.rank === card.rank || card.rank === 'J')) {
-      const isPisti = s.pile.length === 1 && top.rank === card.rank
+      const isPisti = pile.length === 1 && top.rank === card.rank
       const points = isPisti ? (card.rank === 'J' ? 20 : 10) : 0
-      s.captured[player].push(...s.pile, card)
-      s.pile = []
-      s.hiddenInPile = 0
+      s.captured[player].push(...pile, card)
+      s.piles[t.index] = []
+      if (t.index === 0) s.hiddenInPile = 0
       s.pistiPoints[player] += points
       if (isPisti) s.pistiCount[player]++
       s.lastCapturer = player
-      s.lastEvent = { player, card, kind: isPisti ? 'pisti' : 'capture', points }
+      s.lastEvent = { player, card, kind: isPisti ? 'pisti' : 'capture', target: t, points }
     } else {
-      s.pile.push(card)
-      s.lastEvent = { player, card, kind: 'play', points: 0 }
+      const kind = s.mustFill === t.index ? 'fill' : 'play'
+      pile.push(card)
+      s.lastEvent = { player, card, kind, target: t, points: 0 }
     }
   }
 
@@ -194,13 +197,25 @@ export function applyMove(prev: GameState, player: number, move: Move): GameStat
     } else {
       // Oyun bitti: yerde kalanlar (kanallar dahil) son alana gider
       if (s.lastCapturer !== null) {
-        s.captured[s.lastCapturer].push(...s.pile, ...(s.channels.filter(Boolean) as Card[]))
+        s.captured[s.lastCapturer].push(...s.piles.flat(), ...(s.channels.filter(Boolean) as Card[]))
       }
-      s.pile = []
+      s.piles = s.piles.map(() => [])
       s.hiddenInPile = 0
       s.channels = s.channels.map(() => null)
-      s.mustFillChannel = false
+      s.mustFill = null
       s.finished = true
+      return s
+    }
+  }
+
+  // İki yer aşamasında boş kalan yer doldurulmak zorunda (önce yeni açılan 2. yer)
+  s.mustFill = null
+  if (channelsDone(s)) {
+    for (let i = s.piles.length - 1; i >= 0; i--) {
+      if (s.piles[i].length === 0) {
+        s.mustFill = i
+        break
+      }
     }
   }
   return s

@@ -64,15 +64,18 @@ export function HowToPlay({ onBack }: { onBack: () => void }) {
           </section>
 
           <section>
-            <h3>3. Tek Kanal ve Zorunlu Kart</h3>
+            <h3>3. Kanallar Bitince: İki Yer</h3>
             <ul>
               <li>
-                İki kanala da pişti yapılınca kanal sayısı <b>1'e düşer</b> ve oyun sonuna kadar öyle kalır.
+                İki kanala da pişti yapılınca kanalların yeri <b>ikinci bir normal yer</b> olur. Artık masada iki yer vardır.
               </li>
               <li>
-                Kanal boşalınca <b>sıradaki oyuncu kanala kart atmak zorundadır.</b> Başka yere oynayamaz.
+                <b>Sıradaki oyuncu bu yeni yere kart atmak zorundadır.</b> Başka yere oynayamaz.
               </li>
-              <li>Tek kanala pişti yapılıp boşaldığında da aynı kural geçerlidir. Kanal boş kalamaz.</li>
+              <li>Bundan sonra iki yerden istediğine oynarsın. İkisinde de normal pişti kuralları geçerlidir.</li>
+              <li>
+                Yerlerden biri alınıp <b>boş kalırsa</b>, sıradaki oyuncu oraya kart atmak zorundadır. Yer boş kalamaz.
+              </li>
             </ul>
           </section>
 
@@ -121,7 +124,7 @@ export function HowToPlay({ onBack }: { onBack: () => void }) {
               </tbody>
             </table>
             <ul>
-              <li>Oyun sonunda yerde kalan kartlar en son kart alan oyuncuya gider.</li>
+              <li>Oyun sonunda yerlerde kalan bütün kartlar en son kart alan oyuncuya gider.</li>
               <li>Deste bitince en çok puanı olan oyunu kazanır. Menüde seçtiğin sayıda (1, 3 veya 5) oyun alan maçı kazanır.</li>
             </ul>
           </section>
@@ -134,7 +137,7 @@ export function HowToPlay({ onBack }: { onBack: () => void }) {
                 Oynayabileceğin yerler <b className="gold">altın renginde parlar</b>. Oraya dokun.
               </li>
               <li>Tek seçenek varsa karta ikinci kez dokunman yeterli.</li>
-              <li>Kanal turuncu yanıp sönüyorsa oraya kart atmak zorundasın.</li>
+              <li>Bir yerin çerçevesi turuncuysa oraya kart atmak zorundasın.</li>
             </ul>
           </section>
 
