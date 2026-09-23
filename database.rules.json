@@ -1,0 +1,11 @@
+{
+  "rules": {
+    "rooms": {
+      ".read": "auth != null",
+      ".indexOn": ["updatedAt"],
+      "$code": {
+        ".write": "auth != null && $code.matches(/^[0-9]{4}$/)"
+      }
+    }
+  }
+}

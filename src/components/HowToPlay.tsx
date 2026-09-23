@@ -153,7 +153,37 @@ export function HowToPlay({ onBack }: { onBack: () => void }) {
           </section>
 
           <section>
-            <h3>7. Ekranda Nasıl Oynanır?</h3>
+            <h3>7. Arkadaşla Online</h3>
+            <ul>
+              <li>
+                Menüden <b>👥 Arkadaşla Online</b>'a gir ve adını yaz.
+              </li>
+              <li>
+                <b>Oda Kur:</b> kaç kişi, eşli mi ve kaç oyun alan kazanır seç. Ekranda <b>4 haneli oda kodu</b> çıkar.
+              </li>
+              <li>
+                <b>Arkadaşlarına gönder</b> ile kodu WhatsApp'tan paylaş. Arkadaşların <b>Odaya Katıl</b>'a kodu yazar ya da gönderdiğin linke
+                dokunur.
+              </li>
+              <li>
+                Bekleme odasında <b>Buraya geç</b> ile boş bir koltuğa geçebilirsin. Eşli oyunda kiminle takım olacağınızı böyle seçersiniz.
+              </li>
+              <li>
+                4 kişi eşlide kurucu boş koltuğa <b>+ Bilgisayar</b> ekleyebilir. Arkadaşınla takım olup bilgisayarlara karşı oynayabilirsin.
+              </li>
+              <li>
+                Odada en az 2 kişi olunca kurucu <b>Oyunu Başlat</b> der. Boş kalan koltuklara bilgisayar oturur.
+              </li>
+              <li>Herkes kendini altta görür. Yeni oyunu kurucu başlatır.</li>
+              <li>
+                Birinin interneti koparsa kutusunda <b>"bağlantı yok"</b> yazar. Sırası gelince 15 saniye sonra onun yerine bilgisayar oynar.
+              </li>
+              <li>Android, iPhone ve bilgisayar aynı odada oynayabilir.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h3>8. Ekranda Nasıl Oynanır?</h3>
             <ul>
               <li>Elindeki bir karta dokun, kart yukarı kalkar.</li>
               <li>

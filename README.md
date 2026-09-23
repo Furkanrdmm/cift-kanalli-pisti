@@ -39,7 +39,7 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 - ⚙️ Ayarlar: adın, masa rengi, kart arkası rengi, ses, titreşim, oyun hızı
 - 📊 İstatistikler: kazandığın maçlar, piştiler, vale piştileri, galibiyet serisi
 - 📖 Oyunun içinde "Nasıl Oynanır?" rehberi
-- 👥 Arkadaşlarla online oynama: **yakında**
+- 👥 **Arkadaşlarla online**: oda kur, 4 haneli kodu paylaş; 2-4 kişi, eşli de olur, Android ve iPhone aynı odada
 
 ---
 

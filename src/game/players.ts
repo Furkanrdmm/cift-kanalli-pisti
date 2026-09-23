@@ -10,7 +10,7 @@ export function myName(): string {
 }
 
 /** Dar yerler için kısaltılmış ad */
-const short = (n: string, max = 8) => (n.length > max ? n.slice(0, max - 1) + '…' : n)
+export const shortName = (n: string, max = 8) => (n.length > max ? n.slice(0, max - 1) + '…' : n)
 
 export function playerNames(s: GameState): string[] {
   const me = myName()
@@ -27,7 +27,7 @@ export function sideNames(s: GameState): string[] {
 /** Üst çubuktaki kısa isimler */
 export function sideShortNames(s: GameState): string[] {
   if (s.teams) return ['Biz', 'Onlar']
-  const me = short(myName())
+  const me = shortName(myName())
   if (s.playerCount === 2) return [me, 'Bilgisayar']
   return [me, 'B1', 'B2', 'B3'].slice(0, s.playerCount)
 }

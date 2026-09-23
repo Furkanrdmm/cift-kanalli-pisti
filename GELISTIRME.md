@@ -87,7 +87,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 
 - **Platform:** Telefonda tarayıcıdan açılan web oyunu (PWA). Mağaza gerekmez, link ile paylaşılır, ana ekrana eklenebilir. Sonradan gerçek uygulamaya çevrilebilir.
 - **Teknoloji:** React + TypeScript + Vite.
-- **Online:** Firebase (ücretsiz, sunucu yok). Oda kodu ile arkadaş davet edilecek. *(henüz yapılmadı)*
+- **Online:** Firebase Realtime Database + anonim giriş (ücretsiz Spark planı). Oda kodu 4 haneli. Oyunun hesabını telefonlar yapar: sırası gelen oyuncu hamlesini yazar, bilgisayar oyuncularını ve bağlantısı kopan oyuncuyu (15 sn sonra) kurucu oynatır. Bilinen sınır: veritabanında bütün kartlar durduğu için kurcalayan biri rakibin elini görebilir (arkadaş arası kabul edildi).
 - **Görünüm:** Kahvehane masası: çuha, ahşap çerçeve. Yumuşak ve tatlı: yuvarlak yazı tipleri (başlık/sayı: Fredoka, metin: Nunito; `@fontsource-variable` ile uygulamaya gömülü, internetsiz çalışır), hap düğmeler, yuvarlak kartlar.
 - **Oyuncu sayısı:** 2, 3 veya 4 kişi. 4 kişide eşli ya da tekli seçilir.
 - **Bilgisayara karşı oynama:** Var.
@@ -115,6 +115,11 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 | `.github/workflows/android.yml` | APK otomatik derleme |
 | `.github/workflows/pages.yml` | Web sürümünü her push'ta GitHub Pages'e koyar (iPhone ve tarayıcı) |
 | `public/manifest.webmanifest`, `public/icons/` | Ana ekrana ekleme (PWA) ayarları ve simgeleri |
+| `src/online/firebase.ts` | Firebase bağlantısı ve anonim giriş |
+| `src/online/room.ts` | Oda kurma/katılma, koltuklar, çevrimiçi durumu, oyun durumunu yazma (sayaçla çakışma önleme) |
+| `src/online/perspective.ts` | Herkes kendini altta görsün diye oyun durumunu oyuncuya göre döndürme |
+| `src/components/OnlineScreen.tsx` | Online giriş (oda kur/katıl) ve bekleme odası (koltuk seçme, 4 kişi eşlide + Bilgisayar) |
+| `database.rules.json` | Firebase veritabanı kuralları (Firebase konsolunda Realtime Database → Rules sekmesine yapıştırılır) |
 | `src/components/InstallHint.tsx` | iPhone Safari'de "Ana Ekrana Ekle" ipucu |
 | `assets/` | Uygulama simgesi ve açılış ekranı kaynakları |
 
@@ -125,7 +130,8 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - [x] Kahvehane masası görünümü
 - [x] "Nasıl Oynanır?" ekranı (ana menüden)
 - [x] Yarım kalan maçı kaydetme, menüde "Oyuna Devam Et"
-- [ ] Arkadaşla online oynama (Firebase, oda kodu)
+- [x] Arkadaşla online oynama (Firebase, 4 haneli oda kodu, 2-4 kişi, eşli, koltuk seçme, boş koltuğa bilgisayar)
+- [x] 1 günden uzun süredir kullanılmayan odalar, yeni oda kurulurken silinir
 - [x] Web sürümü (GitHub Pages) ve ana ekrana eklenebilir uygulama (PWA): iPhone için
 - [ ] Çevrimdışı çalışma (service worker)
 - [x] Animasyonlar: kart dağıtma, kart atma, yeri alma, son atılan kartın parlaması

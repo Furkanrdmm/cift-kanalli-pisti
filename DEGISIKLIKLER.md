@@ -5,7 +5,23 @@ Her sürüm GitHub'da otomatik APK olarak yayınlanır ("Son Sürüm #numara").
 
 ---
 
-## Yayınlanmadı: iPhone / web sürümü
+## v1.2 — Arkadaşla online (2026-09-24)
+
+APK: Son Sürüm #17
+
+- Menüde **👥 Arkadaşla Online**: adını yaz, **Oda Kur** (2/3/4 kişi, eşli/tekli, kaç oyun) ya da 4 haneli kodla **Odaya Katıl**
+- Bekleme odası: büyük oda kodu, **Arkadaşlarına gönder** (davet linki `?oda=1234` ile doğrudan katılma), koltuklar, takımlar
+- **Buraya geç**: boş koltuğa geçerek takım seçme
+- 4 kişi eşlide kurucu boş koltuğa **+ Bilgisayar** ekleyebilir (arkadaşınla takım olup bilgisayarlara karşı)
+- Kurucu **Oyunu Başlat** der (en az 2 kişi); boş koltuklara bilgisayar oturur
+- "Nasıl Oynanır?" ekranına online bölümü
+- 1 günden uzun süredir kullanılmayan odalar yeni oda kurulurken silinir
+- Herkes kendini altta görür; hamleler anında karşıya gider, aynı animasyonlarla oynanır
+- Bilgisayarları kurucunun telefonu oynatır; bağlantısı kopan oyuncunun yerine 15 sn sonra bilgisayar oynar ("bağlantı yok" işareti)
+- Yeni oyunu / yeni maçı kurucu başlatır, diğerleri bekler
+- Firebase (ücretsiz): anonim giriş, Realtime Database, güvenlik kuralları
+
+## iPhone / web sürümü (yayınlandı, APK #15)
 
 - Web sürümü GitHub Pages'te: https://furkanrdmm.github.io/cift-kanalli-pisti/ (her push'ta kendiliğinden güncellenir)
 - iPhone'da Safari → Paylaş → "Ana Ekrana Ekle" ile uygulama gibi tam ekran açılır (simge ve manifest eklendi)
@@ -69,6 +85,10 @@ Bu noktada oyun **sessiz** ama oynanış tam. Sonraki büyük adım: sesler, mü
 
 | APK | Tarih | Ne değişti |
 |---|---|---|
+| #17 | 2026-09-24 | Arkadaşla online: oda kodu, 2-4 kişi, eşli, koltuk seçme, bağlantı kopunca bilgisayar |
+| #16 | 2026-09-23 | README: kurulum yönlendirmesi (oyunda değişiklik yok) |
+| #15 | 2026-09-23 | iPhone / web sürümü (GitHub Pages), ana ekrana ekleme |
+| #14 | 2026-09-23 | README boyut düzeltmesi (oyunda değişiklik yok) |
 | #13 | 2026-09-23 | Sesler, titreşim, ayarlar, istatistikler, oyuncu adı, masa/kart rengi, görsel yenileme |
 | #12 | 2026-09-23 | Değişiklik günlüğü (oyunda değişiklik yok) |
 | #11 | 2026-09-23 | 3 ve 4 kişilik oyun, 4 kişide eşli/tekli |

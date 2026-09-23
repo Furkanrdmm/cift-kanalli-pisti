@@ -4,6 +4,7 @@ import { HowToPlay } from './components/HowToPlay'
 import { SettingsPanel } from './components/SettingsPanel'
 import { StatsScreen } from './components/StatsScreen'
 import { InstallHint } from './components/InstallHint'
+import { OnlineScreen } from './components/OnlineScreen'
 import { applyTheme, useSettings } from './game/settings'
 import { modeLabel, sideShortNames } from './game/players'
 import { type SavedMatch, clearMatch, loadMatch } from './game/save'
@@ -13,10 +14,15 @@ type Screen =
   | { name: 'howto' }
   | { name: 'settings' }
   | { name: 'stats' }
+  | { name: 'online'; code?: string }
   | { name: 'bot'; target: number; players: number; teamMode: boolean; resume: SavedMatch | null }
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>({ name: 'menu' })
+  // Davet linkinden gelindiyse (?oda=1234) doğrudan online ekranı
+  const [screen, setScreen] = useState<Screen>(() => {
+    const code = new URLSearchParams(location.search).get('oda')
+    return code && /^\d{4}$/.test(code) ? { name: 'online', code } : { name: 'menu' }
+  })
   const [target, setTarget] = useState(3)
   const [players, setPlayers] = useState(2)
   const [teamMode, setTeamMode] = useState(true)
@@ -29,6 +35,7 @@ export default function App() {
   if (screen.name === 'howto') return <HowToPlay onBack={toMenu} />
   if (screen.name === 'settings') return <SettingsPanel onClose={toMenu} />
   if (screen.name === 'stats') return <StatsScreen onBack={toMenu} />
+  if (screen.name === 'online') return <OnlineScreen initialCode={screen.code} onExit={toMenu} />
 
   // Menüye her dönüşte kayıt yeniden okunur
   const saved = loadMatch()
@@ -102,8 +109,8 @@ export default function App() {
         >
           {saved ? 'Yeni Maç (Bilgisayara Karşı)' : 'Bilgisayara Karşı Oyna'}
         </button>
-        <button className="btn" disabled>
-          Arkadaşla Online <small>(yakında)</small>
+        <button className="btn" onClick={() => setScreen({ name: 'online' })}>
+          👥 Arkadaşla Online
         </button>
         <div className="menu-row">
           <button className="btn" onClick={() => setScreen({ name: 'howto' })}>
