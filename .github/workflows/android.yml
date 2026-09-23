@@ -1,0 +1,71 @@
+# Her main push'unda Android APK'sını derler ve "Son Sürüm" olarak yayınlar.
+# İndirme linki: https://github.com/<kullanıcı>/<depo>/releases/latest/download/cift-kanalli-pisti.apk
+name: Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-apk
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Web oyununu derle
+        run: |
+          npm ci
+          npm run build
+          npx cap sync android
+
+      - name: İmza anahtarını hazırla
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then echo "ANDROID_KEYSTORE_BASE64 secret eksik"; exit 1; fi
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/pisti.p12"
+
+      - name: APK derle
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/pisti.p12
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon
+          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/cift-kanalli-pisti.apk"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cift-kanalli-pisti-apk
+          path: cift-kanalli-pisti.apk
+
+      - name: Son Sürüm olarak yayınla
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete son-surum --yes --cleanup-tag || true
+          gh release create son-surum cift-kanalli-pisti.apk \
+            --title "Son Sürüm (#${{ github.run_number }})" \
+            --notes "Android için: APK'yı indir, telefona kur. Commit: ${{ github.sha }}" \
+            --latest
