@@ -1,6 +1,6 @@
 // Titreşim: Android'de Capacitor eklentisi, tarayıcıda navigator.vibrate (varsa)
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics'
-import { getSettings } from './settings'
+import { getSettings } from '../storage/settings'
 
 const safe = (p: Promise<unknown>) => void p.catch(() => {})
 const on = () => getSettings().vibration

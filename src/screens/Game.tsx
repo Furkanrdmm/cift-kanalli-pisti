@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { Icon } from './Icon'
 import {
   type Card,
   type GameEvent,
   type GameState,
   type Move,
   type Target,
+  SUIT_SYMBOL,
   allTargets,
   applyMove,
   channelsDone,
@@ -18,11 +18,10 @@ import {
 } from '../game/engine'
 import { chooseMove } from '../game/bot'
 import { HUMAN, playerNames, sideShortNames } from '../game/players'
-import { type SavedMatch, clearMatch, saveMatch } from '../game/save'
+import { type SavedMatch, clearMatch, saveMatch } from '../storage/save'
 import {
   type Box,
   type Flyer,
-  FlyLayer,
   timings,
   boxOf,
   centered,
@@ -32,14 +31,17 @@ import {
   pileCardBox,
   pileRotation,
   sleep,
-} from './flyers'
-import { PlayingCard } from './PlayingCard'
-import { sfx } from '../game/sound'
-import { haptic } from '../game/haptics'
+} from '../effects/flyers'
+import { sfx } from '../effects/sound'
+import { haptic } from '../effects/haptics'
+import { recordGame, recordMatch, recordPisti } from '../storage/stats'
+import { FlyLayer } from '../components/FlyLayer'
+import { Icon } from '../components/Icon'
+import { PlayerInfo } from '../components/PlayerInfo'
+import { PlayingCard } from '../components/PlayingCard'
+import { ResultModal } from '../components/ResultModal'
 import { SettingsPanel } from './SettingsPanel'
-import { recordGame, recordMatch, recordPisti } from '../game/stats'
 
-const SUIT_SYMBOL = { S: '♠', H: '♥', D: '♦', C: '♣' } as const
 const cardName = (c: Card) => c.rank + SUIT_SYMBOL[c.suit]
 
 /** Kanallar bitince 2 yer olur: sağdaki asıl yer "1. yer", kanalların yeri "2. yer" */
@@ -585,109 +587,6 @@ export function Game({ target, players = 2, teamMode = false, resume, onExit }: 
             onExit={onExit}
           />
         )}
-      </div>
-    </div>
-  )
-}
-
-function PlayerInfo({ name, game, p }: { name: string; game: GameState; p: number }) {
-  return (
-    <div className="player-info">
-      <span className="player-name">{name}</span>
-      <span className="chip" title="Toplanan kart">
-        <Icon name="cards" size={13} /> {game.captured[p].length}
-      </span>
-      {game.pistiCount[p] > 0 && <span className="chip chip--gold">Pişti ×{game.pistiCount[p]}</span>}
-    </div>
-  )
-}
-
-function ResultModal({
-  game,
-  wins,
-  target,
-  matchOver,
-  names,
-  short,
-  onNext,
-  onExit,
-}: {
-  game: GameState
-  wins: number[]
-  target: number
-  matchOver: boolean
-  names: string[]
-  short: string[]
-  onNext: () => void
-  onExit: () => void
-}) {
-  const lines = score(game)
-  const sides = game.teams ? ['Biz', 'Onlar'] : names
-  const mine = sideOf(game, HUMAN)
-  const winner = gameWinner(game)
-  const team = !!game.teams
-
-  let title: string
-  if (matchOver) {
-    const champ = wins.findIndex((w) => w >= target)
-    if (champ === mine) title = team ? 'Maçı kazandınız!' : 'Maçı kazandın!'
-    else title = team ? 'Maçı rakipler kazandı' : `Maçı ${sides[champ]} kazandı`
-  } else if (winner === null) title = 'Berabere'
-  else if (winner === mine) title = team ? 'Bu oyunu siz aldınız!' : 'Bu oyunu sen aldın!'
-  else title = team ? 'Bu oyunu rakipler aldı' : `Bu oyunu ${sides[winner]} aldı`
-
-  const rows: [string, (l: (typeof lines)[number]) => string | number][] = [
-    ['Toplanan kart', (l) => l.cards],
-    ['En çok kart', (l) => l.mostCards],
-    ['Kart puanı', (l) => l.cardPoints], // as, vale, ♣2, ♦10
-    ['Pişti', (l) => `${l.pisti} (${l.pistiCount})`],
-  ]
-  const members = (i: number) => (team ? sidesOf(game)[i].map((p) => names[p]).join(' + ') : null)
-
-  return (
-    <div className="modal-backdrop">
-      <div className="modal">
-        <h2>{title}</h2>
-        <table className={'score-table' + (lines.length > 2 ? ' score-table--wide' : '')}>
-          <thead>
-            <tr>
-              <th />
-              {short.map((n, i) => (
-                <th key={n} className={i === mine ? 'score-mine' : undefined}>
-                  {n}
-                  {members(i) && <small className="score-members">{members(i)}</small>}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(([label, f]) => (
-              <tr key={label}>
-                <td>{label}</td>
-                {lines.map((l, i) => (
-                  <td key={i}>{f(l)}</td>
-                ))}
-              </tr>
-            ))}
-            <tr className="score-total">
-              <td>Toplam</td>
-              {lines.map((l, i) => (
-                <td key={i}>{l.total}</td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
-        <div className="modal-match">
-          Maç: {short.map((n, i) => `${n} ${wins[i]}`).join(' · ')} <small>({target} alan kazanır)</small>
-        </div>
-        <div className="modal-actions">
-          <button className="btn" onClick={onExit}>
-            Menü
-          </button>
-          <button className="btn btn--primary" onClick={onNext}>
-            {matchOver ? 'Yeni Maç' : 'Sonraki Oyun'}
-          </button>
-        </div>
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 // Oyuncu ve taraf isimleri (0 her zaman sen, diğerleri bilgisayar)
 import type { GameState } from './engine'
-import { getSettings } from './settings'
+import { getSettings } from '../storage/settings'
 
 export const HUMAN = 0
 
@@ -10,18 +10,13 @@ export function myName(): string {
 }
 
 /** Dar yerler için kısaltılmış ad */
-export const shortName = (n: string, max = 8) => (n.length > max ? n.slice(0, max - 1) + '…' : n)
+const shortName = (n: string, max = 8) => (n.length > max ? n.slice(0, max - 1) + '…' : n)
 
 export function playerNames(s: GameState): string[] {
   const me = myName()
   if (s.playerCount === 2) return [me, 'Bilgisayar']
   if (s.teams) return [me, 'Sağdaki Rakip', 'Ortağın', 'Soldaki Rakip']
   return [me, 'Bilgisayar 1', 'Bilgisayar 2', 'Bilgisayar 3'].slice(0, s.playerCount)
-}
-
-/** Skor tablosundaki taraflar: eşli oyunda takımlar, tekli oyunda oyuncular */
-export function sideNames(s: GameState): string[] {
-  return s.teams ? ['Biz', 'Onlar'] : playerNames(s)
 }
 
 /** Üst çubuktaki kısa isimler */

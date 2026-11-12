@@ -1,8 +1,6 @@
-// Uçan kart animasyonları: masanın üstünde ayrı bir katmanda kartları bir yerden başka yere kaydırır
-import type { CSSProperties } from 'react'
+// Uçan kart animasyonlarının süre ve konum hesapları (çizimi components/FlyLayer.tsx)
 import type { Card } from '../game/engine'
-import { SPEED_FACTOR, getSettings } from '../game/settings'
-import { PlayingCard } from './PlayingCard'
+import { SPEED_FACTOR, getSettings } from '../storage/settings'
 
 /** Animasyon süreleri (ms), ayarlardaki oyun hızına göre */
 export function timings() {
@@ -77,34 +75,4 @@ export function flyIn(key: string, card: Card | null, faceDown: boolean, from: B
 /** from'dan to'ya küçülerek gidip kaybolan kart */
 export function flyOut(key: string, card: Card | null, faceDown: boolean, from: Box, to: Box, o: Opts): Flyer {
   return { key, card, faceDown, box: from, dir: 'out', dx: cx(to) - cx(from), dy: cy(to) - cy(from), scale: 0.45, r0: o.r0 ?? 0, r1: o.r1 ?? 0, ms: o.ms, delay: o.delay ?? 0 }
-}
-
-export function FlyLayer({ flyers }: { flyers: Flyer[] }) {
-  return (
-    <div className="fly-layer" aria-hidden>
-      {flyers.map((f) => (
-        <div
-          key={f.key}
-          className={'flyer flyer--' + f.dir}
-          style={
-            {
-              left: f.box.x,
-              top: f.box.y,
-              width: f.box.w,
-              height: f.box.h,
-              '--dx': `${f.dx}px`,
-              '--dy': `${f.dy}px`,
-              '--s': f.scale,
-              '--r0': `${f.r0}deg`,
-              '--r1': `${f.r1}deg`,
-              animationDuration: `${f.ms}ms`,
-              animationDelay: `${f.delay}ms`,
-            } as CSSProperties
-          }
-        >
-          <PlayingCard card={f.card} faceDown={f.faceDown} />
-        </div>
-      ))}
-    </div>
-  )
 }

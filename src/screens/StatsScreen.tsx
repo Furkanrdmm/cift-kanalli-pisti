@@ -1,20 +1,11 @@
 import { myName } from '../game/players'
 import { useState } from 'react'
-import { Icon } from './Icon'
-import { ConfirmDialog } from './ConfirmDialog'
-import { resetStats, useStats } from '../game/stats'
+import { Icon } from '../components/Icon'
+import { ConfirmDialog } from '../components/ConfirmDialog'
+import { StatTile } from '../components/StatTile'
+import { resetStats, useStats } from '../storage/stats'
 
 const pct = (a: number, b: number) => (b ? `%${Math.round((a / b) * 100)}` : '–')
-
-function Tile({ label, value, sub, gold }: { label: string; value: number | string; sub?: string; gold?: boolean }) {
-  return (
-    <div className={'stat-tile' + (gold ? ' stat-tile--gold' : '')}>
-      <div className="stat-value">{value}</div>
-      <div className="stat-label">{label}</div>
-      {sub && <div className="stat-sub">{sub}</div>}
-    </div>
-  )
-}
 
 export function StatsScreen({ onBack }: { onBack: () => void }) {
   const s = useStats()
@@ -39,25 +30,25 @@ export function StatsScreen({ onBack }: { onBack: () => void }) {
 
           <h3 className="stat-heading">Maçlar</h3>
           <div className="stat-grid">
-            <Tile label="Oynanan maç" value={s.matches} />
-            <Tile label="Kazanılan maç" value={s.matchesWon} sub={pct(s.matchesWon, s.matches)} gold />
-            <Tile label="Galibiyet serisi" value={s.streak} sub={`En iyi: ${s.bestStreak}`} />
+            <StatTile label="Oynanan maç" value={s.matches} />
+            <StatTile label="Kazanılan maç" value={s.matchesWon} sub={pct(s.matchesWon, s.matches)} gold />
+            <StatTile label="Galibiyet serisi" value={s.streak} sub={`En iyi: ${s.bestStreak}`} />
           </div>
 
           <h3 className="stat-heading">Oyunlar</h3>
           <div className="stat-grid">
-            <Tile label="Oynanan oyun" value={s.games} />
-            <Tile label="Kazanılan oyun" value={s.gamesWon} sub={pct(s.gamesWon, s.games)} gold />
-            <Tile label="En yüksek puan" value={s.bestScore} sub="bir oyunda" />
+            <StatTile label="Oynanan oyun" value={s.games} />
+            <StatTile label="Kazanılan oyun" value={s.gamesWon} sub={pct(s.gamesWon, s.games)} gold />
+            <StatTile label="En yüksek puan" value={s.bestScore} sub="bir oyunda" />
           </div>
 
           <h3 className="stat-heading">Piştiler</h3>
           <div className="stat-grid">
-            <Tile label="Toplam pişti" value={totalPisti} gold />
-            <Tile label="Yerde pişti" value={s.pisti} />
-            <Tile label="Kanal piştisi" value={s.kanalPisti} />
-            <Tile label="Vale piştisi" value={s.valePisti} gold={s.valePisti > 0} />
-            <Tile label="Oyun başına" value={s.games ? (totalPisti / s.games).toFixed(1) : '–'} sub="pişti" />
+            <StatTile label="Toplam pişti" value={totalPisti} gold />
+            <StatTile label="Yerde pişti" value={s.pisti} />
+            <StatTile label="Kanal piştisi" value={s.kanalPisti} />
+            <StatTile label="Vale piştisi" value={s.valePisti} gold={s.valePisti > 0} />
+            <StatTile label="Oyun başına" value={s.games ? (totalPisti / s.games).toFixed(1) : '–'} sub="pişti" />
           </div>
 
           <button

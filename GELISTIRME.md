@@ -96,30 +96,21 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 
 ## Kod yapısı
 
-| Dosya | Ne yapar |
+Her dosyada tek parça vardır; klasörler işe göre ayrılır.
+
+| Klasör / dosya | Ne yapar |
 |---|---|
-| `src/game/engine.ts` | Oyun kuralları: dağıtım, geçerli hamleler, pişti, kanallar, puanlama |
-| `src/game/players.ts` | Oyuncu/takım isimleri (Sen, Ortağın, Rakip…) |
-| `src/game/save.ts` | Yarım kalan maçı telefona kaydetme (Oyuna Devam Et) |
-| `src/game/bot.ts` | Bilgisayar rakibi (çıkan kartları sayar, rakibe pişti fırsatı vermemeye çalışır) |
-| `src/components/Game.tsx` | Oyun ekranı: masa, eller, sıra, sonuç penceresi |
-| `src/components/PlayingCard.tsx` | İskambil kartı görünümü |
-| `src/components/flyers.tsx` | Uçan kart animasyonları (dağıtma, atma, toplama); süreler oyun hızına göre (`timings()`) |
-| `src/game/sound.ts` | Sesler: kart atma, oturma, toplama, dağıtma, pişti / kanal piştisi / vale piştisi, kazanma. Dosya yok, Web Audio ile üretilir |
-| `src/game/haptics.ts` | Titreşim (Capacitor Haptics) |
-| `src/game/settings.ts` | Ayarlar: ad, masa rengi, kart arkası, ses, ses seviyesi, titreşim, oyun hızı (telefona kaydedilir) |
-| `src/components/SettingsPanel.tsx` | Ayarlar ekranı (menüden) ve oyun içi ayarlar penceresi (⚙): ad, masa rengi, kart arkası, ses, titreşim, hız |
-| `src/game/stats.ts`, `src/components/StatsScreen.tsx` | İstatistikler (telefona kaydedilir) ve istatistik ekranı |
-| `src/App.tsx` | Ana menü |
-| `src/components/HowToPlay.tsx` | "Nasıl Oynanır?" ekranı (kurallar ve puanlar) |
-| `src/index.css` | Tüm görünüm (masa, kartlar, animasyonlar) |
+| `src/App.tsx` | Ana menü, ekranlar arası geçiş, telefonun geri tuşu |
+| `src/game/` | Kurallar: `engine.ts` (dağıtım, hamleler, pişti, kanallar, puan), `bot.ts` (bilgisayar rakibi), `players.ts` (oyuncu ve takım adları) |
+| `src/storage/` | Telefona kaydedilenler: `save.ts` (yarım maç), `settings.ts` (ayarlar), `stats.ts` (istatistik) |
+| `src/effects/` | `sound.ts` (Web Audio ile üretilen sesler), `haptics.ts` (titreşim), `flyers.ts` (uçan kart süre ve konum hesapları) |
+| `src/screens/` | Ekranlar: `Game.tsx` (oyun masası), `HowToPlay.tsx` (kurallar), `SettingsPanel.tsx` (ayarlar; oyun içinde pencere), `StatsScreen.tsx` (istatistik) |
+| `src/components/` | Parçalar: `PlayingCard` (kart), `FlyLayer` (uçan kart katmanı), `PlayerInfo` (oyuncu kutusu), `ResultModal` (puan tablosu), `ConfirmDialog` (emin misin penceresi), `Icon` (çizilmiş simgeler), `Toggle` (aç/kapa), `StatTile` (istatistik kutusu), `InstallHint` (iPhone ana ekran ipucu) |
+| `src/index.css` | Bütün görünüm (masa, kartlar, animasyonlar) |
 | `android/`, `capacitor.config.ts` | Android uygulaması |
+| `public/` | Web sürümünün simgeleri ve ana ekrana ekleme ayarı |
 | `.github/workflows/pages.yml` | Web sürümünü her push'ta GitHub Pages'e koyar (iPhone ve tarayıcı) |
-| `public/manifest.webmanifest`, `public/icons/` | Ana ekrana ekleme (PWA) ayarları ve simgeleri |
-| `src/components/InstallHint.tsx` | iPhone Safari'de "Ana Ekrana Ekle" ipucu |
 | `assets/` | Uygulama simgesi ve açılış ekranı kaynakları |
-| `src/components/Icon.tsx` | Çizilmiş simgeler (geri, ayarlar, kurallar, istatistik, kart) |
-| `src/components/ConfirmDialog.tsx` | Oyunun görünümünde "emin misin?" penceresi |
 | `magaza/` | Play mağaza yazıları, ekran görüntüleri, kapak görseli (`kapak-gorseli.html` ile üretilir) |
 
 ## Yapılacaklar

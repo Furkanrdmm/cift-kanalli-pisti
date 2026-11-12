@@ -1,5 +1,5 @@
 // Oyun sesleri: dosya kullanmadan telefonda anlık üretilir (Web Audio)
-import { getSettings } from './settings'
+import { getSettings } from '../storage/settings'
 
 let ctx: AudioContext | null = null
 let noiseBuf: AudioBuffer | null = null

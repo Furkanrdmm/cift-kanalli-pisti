@@ -1,8 +1,9 @@
-import { CARD_BACKS, FELTS, type Speed, updateSettings, useSettings } from '../game/settings'
-import { Icon } from './Icon'
-import { PlayingCard } from './PlayingCard'
-import { haptic } from '../game/haptics'
-import { sfx } from '../game/sound'
+import { CARD_BACKS, FELTS, type Speed, updateSettings, useSettings } from '../storage/settings'
+import { Icon } from '../components/Icon'
+import { PlayingCard } from '../components/PlayingCard'
+import { Toggle } from '../components/Toggle'
+import { haptic } from '../effects/haptics'
+import { sfx } from '../effects/sound'
 
 const SPEEDS: [Speed, string][] = [
   ['slow', 'Yavaş'],
@@ -10,13 +11,6 @@ const SPEEDS: [Speed, string][] = [
   ['fast', 'Hızlı'],
 ]
 
-function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) => void; label: string }) {
-  return (
-    <button className={'toggle' + (on ? ' toggle--on' : '')} role="switch" aria-checked={on} aria-label={label} onClick={() => onChange(!on)}>
-      <span className="toggle-knob" />
-    </button>
-  )
-}
 
 /** Ayarlar: menüden tam ekran, oyun içinden pencere olarak açılır */
 export function SettingsPanel({ onClose, asModal }: { onClose: () => void; asModal?: boolean }) {

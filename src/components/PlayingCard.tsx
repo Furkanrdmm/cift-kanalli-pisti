@@ -1,10 +1,7 @@
 import type { HTMLAttributes } from 'react'
-import type { Card } from '../game/engine'
+import { type Card, SUIT_SYMBOL } from '../game/engine'
 
-const SUIT_SYMBOL = { S: '♠', H: '♥', D: '♦', C: '♣' } as const
-const RANK_LABEL: Record<string, string> = { J: 'J', Q: 'Q', K: 'K', A: 'A' }
-
-interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'onClick'> {
+interface Props extends HTMLAttributes<HTMLDivElement> {
   card?: Card | null
   faceDown?: boolean
   selected?: boolean
@@ -12,16 +9,14 @@ interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'onClick'> {
   small?: boolean
   /** Dağıtım animasyonu sürerken yerini tutsun ama görünmesin */
   hidden?: boolean
-  onClick?: () => void
 }
 
-export function PlayingCard({ card, faceDown, selected, disabled, small, hidden, style, className, onClick, ...rest }: Props) {
+export function PlayingCard({ card, faceDown, selected, disabled, small, hidden, style, className, ...rest }: Props) {
   const cls = [
     'card',
     small && 'card--small',
     selected && 'card--selected',
     disabled && 'card--disabled',
-    onClick && 'card--clickable',
     className,
   ]
     .filter(Boolean)
@@ -30,7 +25,7 @@ export function PlayingCard({ card, faceDown, selected, disabled, small, hidden,
 
   if (faceDown || !card) {
     return (
-      <div {...rest} className={cls + ' card--back'} style={st} onClick={onClick}>
+      <div {...rest} className={cls + ' card--back'} style={st}>
         <div className="card-back-pattern" />
       </div>
     )
@@ -38,17 +33,16 @@ export function PlayingCard({ card, faceDown, selected, disabled, small, hidden,
 
   const red = card.suit === 'H' || card.suit === 'D'
   const sym = SUIT_SYMBOL[card.suit]
-  const label = RANK_LABEL[card.rank] ?? card.rank
   return (
-    <div {...rest} className={cls + (red ? ' card--red' : '')} style={st} onClick={onClick}>
+    <div {...rest} className={cls + (red ? ' card--red' : '')} style={st}>
       <div className="card-corner card-corner--tl">
-        <span>{label}</span>
+        <span>{card.rank}</span>
         <span>{sym}</span>
       </div>
       <div className="card-center">
         {['J', 'Q', 'K'].includes(card.rank) ? (
           <span className="card-face">
-            <b>{label}</b>
+            <b>{card.rank}</b>
             <small>{sym}</small>
           </span>
         ) : (
@@ -56,7 +50,7 @@ export function PlayingCard({ card, faceDown, selected, disabled, small, hidden,
         )}
       </div>
       <div className="card-corner card-corner--br">
-        <span>{label}</span>
+        <span>{card.rank}</span>
         <span>{sym}</span>
       </div>
     </div>

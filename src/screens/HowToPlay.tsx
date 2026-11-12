@@ -1,6 +1,6 @@
 import type { Card } from '../game/engine'
-import { Icon } from './Icon'
-import { PlayingCard } from './PlayingCard'
+import { Icon } from '../components/Icon'
+import { PlayingCard } from '../components/PlayingCard'
 
 const c = (rank: Card['rank'], suit: Card['suit']): Card => ({ id: rank + suit, rank, suit })
 

@@ -1,5 +1,5 @@
 // Yarım kalan maçı telefona kaydeder, menüde "Oyuna Devam Et" için
-import type { GameState } from './engine'
+import type { GameState } from '../game/engine'
 
 const KEY = 'cift-kanalli-pisti:kayit'
 const VERSION = 2 // kurallar/durum yapısı değişince artır, eski kayıtlar yok sayılır

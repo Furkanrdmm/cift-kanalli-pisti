@@ -1,6 +1,7 @@
 // Çift Kanallı Pişti — oyun motoru (saf fonksiyonlar, arayüzden bağımsız)
 
 export type Suit = 'S' | 'H' | 'D' | 'C' // maça, kupa, karo, sinek
+export const SUIT_SYMBOL: Record<Suit, string> = { S: '♠', H: '♥', D: '♦', C: '♣' }
 export type Rank = 'A' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | 'J' | 'Q' | 'K'
 
 export interface Card {
@@ -16,7 +17,7 @@ export interface Move {
   target: Target
 }
 
-export type EventKind = 'play' | 'capture' | 'pisti' | 'channelPisti' | 'fill'
+type EventKind = 'play' | 'capture' | 'pisti' | 'channelPisti' | 'fill'
 
 export interface GameEvent {
   player: number
@@ -50,17 +51,17 @@ export interface GameState {
   finished: boolean
 }
 
-export const SUITS: Suit[] = ['S', 'H', 'D', 'C']
-export const RANKS: Rank[] = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-export const HAND_SIZE = 4
+const SUITS: Suit[] = ['S', 'H', 'D', 'C']
+const RANKS: Rank[] = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+const HAND_SIZE = 4
 
-export function newDeck(): Card[] {
+function newDeck(): Card[] {
   const deck: Card[] = []
   for (const suit of SUITS) for (const rank of RANKS) deck.push({ id: rank + suit, suit, rank })
   return deck
 }
 
-export function shuffle<T>(arr: T[]): T[] {
+function shuffle<T>(arr: T[]): T[] {
   const a = arr.slice()
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
@@ -232,7 +233,7 @@ export function cardValue(c: Card): number {
   return 0
 }
 
-export interface ScoreLine {
+interface ScoreLine {
   cards: number
   cardPoints: number
   mostCards: number

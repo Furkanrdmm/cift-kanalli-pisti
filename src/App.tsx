@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import { App as NativeApp } from '@capacitor/app'
 import { Icon } from './components/Icon'
-import { Game } from './components/Game'
-import { HowToPlay } from './components/HowToPlay'
-import { SettingsPanel } from './components/SettingsPanel'
-import { StatsScreen } from './components/StatsScreen'
+import { Game } from './screens/Game'
+import { HowToPlay } from './screens/HowToPlay'
+import { SettingsPanel } from './screens/SettingsPanel'
+import { StatsScreen } from './screens/StatsScreen'
 import { InstallHint } from './components/InstallHint'
 import { ConfirmDialog } from './components/ConfirmDialog'
-import { applyTheme, useSettings } from './game/settings'
+import { applyTheme, useSettings } from './storage/settings'
 import { modeLabel, sideShortNames } from './game/players'
-import { type SavedMatch, clearMatch, loadMatch } from './game/save'
+import { type SavedMatch, clearMatch, loadMatch } from './storage/save'
 
 type Screen =
   | { name: 'menu' }
