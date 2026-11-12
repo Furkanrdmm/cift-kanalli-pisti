@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'com.furkanrdmm.ciftkanallipisti',
+  appId: 'com.nekank.ciftkanallipisti',
   appName: 'Çift Kanallı Pişti',
   webDir: 'dist',
   backgroundColor: '#3e2210',

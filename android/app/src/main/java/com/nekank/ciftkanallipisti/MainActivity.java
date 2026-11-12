@@ -1,4 +1,4 @@
-package com.furkanrdmm.ciftkanallipisti;
+package com.nekank.ciftkanallipisti;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -1,4 +1,5 @@
 import { CARD_BACKS, FELTS, type Speed, updateSettings, useSettings } from '../game/settings'
+import { Icon } from './Icon'
 import { PlayingCard } from './PlayingCard'
 import { haptic } from '../game/haptics'
 import { sfx } from '../game/sound'
@@ -162,7 +163,7 @@ export function SettingsPanel({ onClose, asModal }: { onClose: () => void; asMod
       <div className="howto">
         <header className="topbar">
           <button className="icon-btn" onClick={onClose} aria-label="Menüye dön">
-            ←
+            <Icon name="back" />
           </button>
           <h2 className="howto-title">Ayarlar</h2>
           <span style={{ width: 38 }} />

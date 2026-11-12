@@ -1,4 +1,7 @@
 import { myName } from '../game/players'
+import { useState } from 'react'
+import { Icon } from './Icon'
+import { ConfirmDialog } from './ConfirmDialog'
 import { resetStats, useStats } from '../game/stats'
 
 const pct = (a: number, b: number) => (b ? `%${Math.round((a / b) * 100)}` : '–')
@@ -15,6 +18,7 @@ function Tile({ label, value, sub, gold }: { label: string; value: number | stri
 
 export function StatsScreen({ onBack }: { onBack: () => void }) {
   const s = useStats()
+  const [askReset, setAskReset] = useState(false)
   const totalPisti = s.pisti + s.kanalPisti + s.valePisti
 
   return (
@@ -22,7 +26,7 @@ export function StatsScreen({ onBack }: { onBack: () => void }) {
       <div className="howto">
         <header className="topbar">
           <button className="icon-btn" onClick={onBack} aria-label="Menüye dön">
-            ←
+            <Icon name="back" />
           </button>
           <h2 className="howto-title">İstatistikler</h2>
           <span style={{ width: 38 }} />
@@ -58,14 +62,23 @@ export function StatsScreen({ onBack }: { onBack: () => void }) {
 
           <button
             className="btn stat-reset"
-            onClick={() => {
-              if (confirm('Bütün istatistikler silinecek. Emin misin?')) resetStats()
-            }}
+            onClick={() => setAskReset(true)}
           >
             İstatistikleri sıfırla
           </button>
         </div>
       </div>
+      {askReset && (
+        <ConfirmDialog
+          text="Bütün istatistikler silinecek. Emin misin?"
+          yes="Sıfırla"
+          onYes={() => {
+            resetStats()
+            setAskReset(false)
+          }}
+          onNo={() => setAskReset(false)}
+        />
+      )}
     </div>
   )
 }

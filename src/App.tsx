@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import { App as NativeApp } from '@capacitor/app'
+import { Icon } from './components/Icon'
 import { Game } from './components/Game'
 import { HowToPlay } from './components/HowToPlay'
 import { SettingsPanel } from './components/SettingsPanel'
 import { StatsScreen } from './components/StatsScreen'
 import { InstallHint } from './components/InstallHint'
-import { OnlineScreen } from './components/OnlineScreen'
+import { ConfirmDialog } from './components/ConfirmDialog'
 import { applyTheme, useSettings } from './game/settings'
 import { modeLabel, sideShortNames } from './game/players'
 import { type SavedMatch, clearMatch, loadMatch } from './game/save'
@@ -14,28 +16,39 @@ type Screen =
   | { name: 'howto' }
   | { name: 'settings' }
   | { name: 'stats' }
-  | { name: 'online'; code?: string }
   | { name: 'bot'; target: number; players: number; teamMode: boolean; resume: SavedMatch | null }
 
 export default function App() {
-  // Davet linkinden gelindiyse (?oda=1234) doğrudan online ekranı
-  const [screen, setScreen] = useState<Screen>(() => {
-    const code = new URLSearchParams(location.search).get('oda')
-    return code && /^\d{4}$/.test(code) ? { name: 'online', code } : { name: 'menu' }
-  })
+  const [screen, setScreen] = useState<Screen>({ name: 'menu' })
   const [target, setTarget] = useState(3)
   const [players, setPlayers] = useState(2)
   const [teamMode, setTeamMode] = useState(true)
+  const [askNew, setAskNew] = useState(false)
   const toMenu = () => setScreen({ name: 'menu' })
   const settings = useSettings()
   useEffect(() => applyTheme(settings), [settings])
+
+  // Telefonun geri tuşu: açık pencereyi kapatır, ekrandaysan menüye döner, menüdeysen çıkar
+  useEffect(() => {
+    const h = NativeApp.addListener('backButton', () => {
+      if (askNew) setAskNew(false)
+      else if (screen.name !== 'menu') toMenu()
+      else void NativeApp.exitApp()
+    })
+    return () => void h.then((l) => l.remove())
+  }, [screen, askNew])
+
+  const startNew = () => {
+    setAskNew(false)
+    clearMatch()
+    setScreen({ name: 'bot', target, players, teamMode: players === 4 && teamMode, resume: null })
+  }
 
   if (screen.name === 'bot')
     return <Game target={screen.target} players={screen.players} teamMode={screen.teamMode} resume={screen.resume} onExit={toMenu} />
   if (screen.name === 'howto') return <HowToPlay onBack={toMenu} />
   if (screen.name === 'settings') return <SettingsPanel onClose={toMenu} />
   if (screen.name === 'stats') return <StatsScreen onBack={toMenu} />
-  if (screen.name === 'online') return <OnlineScreen initialCode={screen.code} onExit={toMenu} />
 
   // Menüye her dönüşte kayıt yeniden okunur
   const saved = loadMatch()
@@ -101,32 +114,26 @@ export default function App() {
 
         <button
           className={saved ? 'btn' : 'btn btn--primary'}
-          onClick={() => {
-            if (saved && !confirm('Yarım kalan maç silinecek. Yeni maç başlasın mı?')) return
-            clearMatch()
-            setScreen({ name: 'bot', target, players, teamMode: players === 4 && teamMode, resume: null })
-          }}
+          onClick={() => (saved ? setAskNew(true) : startNew())}
         >
           {saved ? 'Yeni Maç (Bilgisayara Karşı)' : 'Bilgisayara Karşı Oyna'}
         </button>
-        <button className="btn" onClick={() => setScreen({ name: 'online' })}>
-          👥 Arkadaşla Online
-        </button>
         <div className="menu-row">
           <button className="btn" onClick={() => setScreen({ name: 'howto' })}>
-            <span className="menu-icon">📖</span>
+            <span className="menu-icon"><Icon name="book" size={22} /></span>
             Kurallar
           </button>
           <button className="btn" onClick={() => setScreen({ name: 'stats' })}>
-            <span className="menu-icon">📊</span>
+            <span className="menu-icon"><Icon name="chart" size={22} /></span>
             İstatistik
           </button>
           <button className="btn" onClick={() => setScreen({ name: 'settings' })}>
-            <span className="menu-icon">⚙️</span>
+            <span className="menu-icon"><Icon name="gear" size={22} /></span>
             Ayarlar
           </button>
         </div>
       </div>
+      {askNew && <ConfirmDialog text="Yarım kalan maç silinecek. Yeni maç başlasın mı?" yes="Yeni Maç" onYes={startNew} onNo={() => setAskNew(false)} />}
     </div>
   )
 }

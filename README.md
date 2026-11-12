@@ -9,13 +9,10 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 
 <br>
 
-[![Android İçin İndir](https://img.shields.io/badge/Android%20İçin%20İndir-APK-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)<br>
-**[⬇️ Oyunu indir](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)** &nbsp;·&nbsp; **[📖 Nasıl kurulur?](#android-kurulum)**
-
 [![iPhone'da Oyna](https://img.shields.io/badge/iPhone'da%20Oyna-Kurulum-000000?style=for-the-badge&logo=apple&logoColor=white)](#iphone-kurulum)<br>
 **[📖 Nasıl kurulur? (oyunun linki burada)](#iphone-kurulum)**
 
-<sub>Ücretsiz · Android 7 ve üzeri (5 MB) · iPhone ve bilgisayarda tarayıcıdan</sub>
+<sub>Ücretsiz · Android sürümü yakında Google Play'de · iPhone ve bilgisayarda tarayıcıdan</sub>
 
 <br>
 
@@ -37,24 +34,12 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 - ⚙️ Ayarlar: adın, masa rengi, kart arkası rengi, ses, titreşim, oyun hızı
 - 📊 İstatistikler: kazandığın maçlar, piştiler, vale piştileri, galibiyet serisi
 - 📖 Oyunun içinde "Nasıl Oynanır?" rehberi
-- 👥 **Arkadaşlarla online**: oda kur, 4 haneli kodu paylaş; 2-4 kişi, eşli de olur, Android ve iPhone aynı odada
 
 ---
 
 <a id="nasil-kurulur"></a>
 
 ## 📲 Nasıl Kurulur?
-
-<a id="android-kurulum"></a>
-
-### 🤖 Android'de
-
-1. Sayfanın en üstündeki **"⬇️ Oyunu indir"** linkine telefondan dokun, APK dosyası iner.
-2. İnen dosyayı aç.
-3. Telefon *"Bilinmeyen kaynaklardan yüklemeye izin ver"* diye sorarsa **izin ver**.
-4. *Play Protect* uyarısı çıkarsa **"Yine de yükle"** de. Oyun Play Store'da olmadığı için bu uyarı normal.
-
-> **Yeni sürüm çıkınca:** Aynı linkten tekrar indirip kurman yeterli. Eski sürümün üstüne kurulur.
 
 <a id="iphone-kurulum"></a>
 
@@ -129,7 +114,7 @@ Aynı adresi ([furkanrdmm.github.io/cift-kanalli-pisti](https://furkanrdmm.githu
 
 <div align="center">
 
-**[⬇️ Hemen İndir ve Oyna](https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk)**
+**[🃏 Tarayıcıda Oyna](https://furkanrdmm.github.io/cift-kanalli-pisti/)**
 
 <sub>Geliştirme notları için: [GELISTIRME.md](GELISTIRME.md)</sub>
 

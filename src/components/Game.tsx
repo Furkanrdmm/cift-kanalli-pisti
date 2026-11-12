@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Icon } from './Icon'
 import {
   type Card,
   type GameEvent,
@@ -16,9 +17,7 @@ import {
   sidesOf,
 } from '../game/engine'
 import { chooseMove } from '../game/bot'
-import { HUMAN, playerNames, shortName, sideShortNames } from '../game/players'
-import type { MatchData, MoveRecord } from '../online/room'
-import { remoteToLocalSeat, toLocal, winsToLocal } from '../online/perspective'
+import { HUMAN, playerNames, sideShortNames } from '../game/players'
 import { type SavedMatch, clearMatch, saveMatch } from '../game/save'
 import {
   type Box,
@@ -73,32 +72,13 @@ function dealIds(s: GameState, withTable: boolean): Set<string> {
 
 const targetKey = (t: Target) => `${t.kind}-${t.index}`
 
-/** Online oyun bağlantısı (OnlineScreen verir). Bütün oyuncu sıraları "yerel": 0 = ben. */
-export interface OnlineLink {
-  mySeat: number
-  isHost: boolean
-  names: string[]
-  bots: boolean[]
-  offline: boolean[]
-  match: MatchData
-  /** Yeni durumu odaya yaz (yerel bakış açısından); başarılıysa true */
-  push: (expectedSeq: number, next: GameState, wins: number[], move: { player: number; move: Move } | null, newGame?: boolean) => Promise<boolean>
-}
-
 interface Props {
   target: number
   /** Yeni maç için oyuncu sayısı ve eşli mi (devam edilen maçta kayıttan gelir) */
   players?: number
   teamMode?: boolean
   resume?: SavedMatch | null
-  online?: OnlineLink
   onExit: () => void
-}
-
-/** Odadaki durumu benim bakış açıma çevir */
-function parseMatch(m: MatchData, mySeat: number) {
-  const g = toLocal(JSON.parse(m.game) as GameState, mySeat)
-  return { game: g, wins: winsToLocal(JSON.parse(m.wins) as number[], mySeat, !!g.teams) }
 }
 
 /** Oyun bittiyse kazananı ekleyip yeni maç skorunu hesapla */
@@ -108,14 +88,10 @@ function winsAfter(next: GameState, wins: number[]): number[] {
   return wins.map((n, i) => (i === winner ? n + 1 : n))
 }
 
-/** Bağlantısı kopan oyuncunun sırası gelince kurucu bu kadar bekleyip onun yerine oynar */
-const OFFLINE_TAKEOVER_MS = 15000
-
-export function Game({ target, players = 2, teamMode = false, resume, online, onExit }: Props) {
-  const [initial] = useState(() => (online ? parseMatch(online.match, online.mySeat) : null))
-  const [game, setGameState] = useState<GameState>(() => initial?.game ?? resume?.game ?? newGame(players, HUMAN, teamMode))
-  const [wins, setWinsState] = useState(() => initial?.wins ?? resume?.wins ?? sidesOf(game).map(() => 0))
-  // Arka arkaya gelen online hamlelerde her zaman en güncel durumu kullanmak için
+export function Game({ target, players = 2, teamMode = false, resume, onExit }: Props) {
+  const [game, setGameState] = useState<GameState>(() => resume?.game ?? newGame(players, HUMAN, teamMode))
+  const [wins, setWinsState] = useState(() => resume?.wins ?? sidesOf(game).map(() => 0))
+  // Animasyon sırasında her zaman en güncel durumu kullanmak için
   const gameRef = useRef(game)
   const winsRef = useRef(wins)
   const setGame = (g: GameState) => {
@@ -126,8 +102,6 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
     winsRef.current = w
     setWinsState(w)
   }
-  const seqRef = useRef(online?.match.seq ?? 0)
-  const gameNoRef = useRef(online?.match.gameNo ?? 0)
   const [selected, setSelected] = useState<string | null>(null)
   const [toast, setToast] = useState<GameEvent | null>(null)
   const [showSettings, setShowSettings] = useState(false)
@@ -135,8 +109,8 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
   // Animasyon durumu: animasyon sürerken ekranda "view" gösterilir, oyun durumu sonra güncellenir
   const [view, setView] = useState<GameState | null>(null)
   const [flyers, setFlyers] = useState<Flyer[]>([])
-  // Yeni maçta kartlar dağıtılarak gelir; devam edilen (veya online'da sonradan girilen) maçta gelmez
-  const [introDeal] = useState(() => !resume && !(online && online.match.seq > 0))
+  // Yeni maçta kartlar dağıtılarak gelir; devam edilen maçta gelmez
+  const [introDeal] = useState(() => !resume)
   const [hidden, setHidden] = useState<Set<string>>(() => (introDeal ? dealIds(game, true) : new Set()))
   const [busy, setBusyState] = useState(introDeal)
   const busyRef = useRef(introDeal)
@@ -218,22 +192,13 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
   }
 
   /** Hamleyi animasyonla oynat: kart ele/yere uçar, alınan kartlar toplanır, sonra durum güncellenir.
-   *  from: sürüklenen kartın bırakıldığı yer (yoksa elden başlar)
-   *  remote: online'da başkasının hamlesi; animasyondan sonra odadaki durum esas alınır */
-  const runMove = async (player: number, move: Move, from?: Box, remote?: { state: GameState }) => {
+   *  from: sürüklenen kartın bırakıldığı yer (yoksa elden başlar) */
+  const runMove = async (player: number, move: Move, from?: Box) => {
     if (busyRef.current || !isLegal(gameRef.current, player, move)) return
     setBusy(true)
     setSelected(null)
     const prev = gameRef.current
     const next = applyMove(prev, player, move)
-
-    // Online: kendi hamlemi (veya kurucuysam bilgisayarın hamlesini) hemen odaya yaz
-    let pushed: Promise<boolean> | null = null
-    if (online && !remote) {
-      const expected = seqRef.current
-      seqRef.current = expected + 1
-      pushed = online.push(expected, next, winsAfter(next, winsRef.current), { player, move })
-    }
     const root = rootRef.current!
     const full = cardSize()
     const card = prev.hands[player].find((c) => c.id === move.cardId)!
@@ -309,11 +274,9 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
     if (dealt) setHidden(dealIds(next, false))
     setView(null)
     setFlyers([])
-    setGame(remote ? remote.state : next)
+    setGame(next)
     finishGame(next)
     if (dealt) await runDeal(next, false)
-    // Yazma başarısızsa (başkası önce yazdı) odadaki duruma yeniden eşitlen
-    if (pushed && !(await pushed)) seqRef.current = -1
     setBusy(false)
   }
 
@@ -332,60 +295,20 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Her hamlede kaydet; maç bittiyse kaydı sil (online maçlar odada durur, kaydedilmez)
+  // Her hamlede kaydet; maç bittiyse kaydı sil
   useEffect(() => {
-    if (online) return
     if (wins.some((w) => w >= target)) clearMatch()
     else saveMatch(target, wins, game)
-  }, [game, wins, target, online])
+  }, [game, wins, target])
 
-  // Bilgisayarların sırası. Online'da bilgisayarları (ve bağlantısı kopan oyuncuyu) sadece kurucu oynatır.
-  const botKey = online ? `${online.isHost}|${online.bots.join()}|${online.offline.join()}` : ''
+  // Bilgisayarların sırası
   useEffect(() => {
-    if (busy || game.finished || game.turn === HUMAN) return
+    if (busy || game.finished || game.turn === HUMAN || showSettings) return
     const p = game.turn
-    let delay = timings().bot
-    if (online) {
-      if (!online.isHost) return
-      if (!online.bots[p]) {
-        if (!online.offline[p]) return // insan oyuncu: onun hamlesini bekle
-        delay = OFFLINE_TAKEOVER_MS
-      }
-    } else if (showSettings) return
-    const t = setTimeout(() => runMove(p, chooseMove(gameRef.current, p)), delay)
+    const t = setTimeout(() => runMove(p, chooseMove(gameRef.current, p)), timings().bot)
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [game, busy, showSettings, botKey])
-
-  // Online: odadan gelen yeni durumu işle (başkasının hamlesi, yeni oyun ya da eşitlenme)
-  useEffect(() => {
-    if (!online || busy) return
-    const m = online.match
-    if (m.seq <= seqRef.current) return
-    const { game: g, wins: w } = parseMatch(m, online.mySeat)
-    if (m.gameNo !== gameNoRef.current) {
-      // Kurucu yeni oyunu başlattı
-      seqRef.current = m.seq
-      gameNoRef.current = m.gameNo
-      setWins(w)
-      startNewGame(g)
-      return
-    }
-    const rec = m.move ? (JSON.parse(m.move) as MoveRecord) : null
-    if (rec && m.seq === seqRef.current + 1) {
-      const p = remoteToLocalSeat(rec.player, online.mySeat, g.playerCount)
-      if (isLegal(gameRef.current, p, rec.move)) {
-        seqRef.current = m.seq
-        void runMove(p, rec.move, undefined, { state: g })
-        return
-      }
-    }
-    // Arada hamle kaçtıysa animasyonsuz eşitlen
-    seqRef.current = m.seq
-    setGame(g)
-    setWins(w)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [online?.match, busy])
+  }, [game, busy, showSettings])
 
   useEffect(() => {
     if (!toast) return
@@ -469,7 +392,7 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
     setSelected(null)
   }
 
-  const names = online ? online.names : playerNames(game)
+  const names = playerNames(game)
   let status: string
   if (game.finished) status = 'Oyun bitti'
   else if (game.turn !== HUMAN) status = `${names[game.turn]} düşünüyor…`
@@ -517,7 +440,7 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
     )
   }
   const matchOver = wins.some((w) => w >= target)
-  const shortNames = game.teams ? ['Biz', 'Onlar'] : online ? names.map((n) => shortName(n)) : sideShortNames(game)
+  const shortNames = game.teams ? ['Biz', 'Onlar'] : sideShortNames(game)
   const partner = game.teams ? game.teams[sideOf(game, HUMAN)].find((p) => p !== HUMAN) : undefined
 
   // Masa düzeni: sen alttasın, sıra saat yönünün tersine döner.
@@ -543,7 +466,7 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
           <PlayingCard key={c.id} faceDown small hidden={hidden.has(c.id)} data-opp-card="" />
         ))}
       </div>
-      <PlayerInfo name={names[p]} game={shown} p={p} tag={online ? (online.bots[p] ? '🤖' : online.offline[p] ? 'bağlantı yok' : null) : null} />
+      <PlayerInfo name={names[p]} game={shown} p={p} />
     </div>
   )
 
@@ -554,10 +477,10 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
         <header className="topbar">
           <div className="topbar-left">
             <button className="icon-btn" onClick={onExit} aria-label="Menüye dön">
-              ←
+              <Icon name="back" />
             </button>
             <button className="icon-btn" onClick={() => setShowSettings(true)} aria-label="Ayarlar">
-              ⚙
+              <Icon name="gear" />
             </button>
           </div>
           <div className="match-score">
@@ -654,21 +577,10 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
             matchOver={matchOver}
             names={names}
             short={shortNames}
-            waiting={online && !online.isHost ? `${online.names[remoteToLocalSeat(0, online.mySeat, game.playerCount)]} yeni oyunu başlatacak…` : null}
             onNext={() => {
-              const nextWins = matchOver ? wins.map(() => 0) : wins
-              setWins(nextWins)
+              setWins(matchOver ? wins.map(() => 0) : wins)
               // Her oyunda başlayan oyuncu sırayla değişir
-              const g = newGame(game.playerCount, (game.starter + 1) % game.playerCount, !!game.teams)
-              if (online) {
-                const expected = seqRef.current
-                seqRef.current = expected + 1
-                gameNoRef.current += 1
-                void online.push(expected, g, nextWins, null, true).then((ok) => {
-                  if (!ok) seqRef.current = -1
-                })
-              }
-              startNewGame(g)
+              startNewGame(newGame(game.playerCount, (game.starter + 1) % game.playerCount, !!game.teams))
             }}
             onExit={onExit}
           />
@@ -678,13 +590,12 @@ export function Game({ target, players = 2, teamMode = false, resume, online, on
   )
 }
 
-function PlayerInfo({ name, game, p, tag }: { name: string; game: GameState; p: number; tag?: string | null }) {
+function PlayerInfo({ name, game, p }: { name: string; game: GameState; p: number }) {
   return (
     <div className="player-info">
       <span className="player-name">{name}</span>
-      {tag && <span className={'chip' + (tag === '🤖' ? '' : ' chip--warn')}>{tag}</span>}
       <span className="chip" title="Toplanan kart">
-        🂠 {game.captured[p].length}
+        <Icon name="cards" size={13} /> {game.captured[p].length}
       </span>
       {game.pistiCount[p] > 0 && <span className="chip chip--gold">Pişti ×{game.pistiCount[p]}</span>}
     </div>
@@ -698,7 +609,6 @@ function ResultModal({
   matchOver,
   names,
   short,
-  waiting,
   onNext,
   onExit,
 }: {
@@ -708,8 +618,6 @@ function ResultModal({
   matchOver: boolean
   names: string[]
   short: string[]
-  /** Online'da yeni oyunu kurucu başlatır; diğerleri bu yazıyı görür */
-  waiting: string | null
   onNext: () => void
   onExit: () => void
 }) {
@@ -722,7 +630,7 @@ function ResultModal({
   let title: string
   if (matchOver) {
     const champ = wins.findIndex((w) => w >= target)
-    if (champ === mine) title = team ? 'Maçı kazandınız! 🏆' : 'Maçı kazandın! 🏆'
+    if (champ === mine) title = team ? 'Maçı kazandınız!' : 'Maçı kazandın!'
     else title = team ? 'Maçı rakipler kazandı' : `Maçı ${sides[champ]} kazandı`
   } else if (winner === null) title = 'Berabere'
   else if (winner === mine) title = team ? 'Bu oyunu siz aldınız!' : 'Bu oyunu sen aldın!'
@@ -776,13 +684,9 @@ function ResultModal({
           <button className="btn" onClick={onExit}>
             Menü
           </button>
-          {waiting ? (
-            <div className="modal-waiting">{waiting}</div>
-          ) : (
-            <button className="btn btn--primary" onClick={onNext}>
-              {matchOver ? 'Yeni Maç' : 'Sonraki Oyun'}
-            </button>
-          )}
+          <button className="btn btn--primary" onClick={onNext}>
+            {matchOver ? 'Yeni Maç' : 'Sonraki Oyun'}
+          </button>
         </div>
       </div>
     </div>

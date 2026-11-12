@@ -1,16 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.furkanrdmm.ciftkanallipisti"
+    namespace = "com.nekank.ciftkanallipisti"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.furkanrdmm.ciftkanallipisti"
+        applicationId "com.nekank.ciftkanallipisti"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        // GitHub Actions'ta her derleme numarası yeni bir sürüm olur, böylece güncelleme üstüne yüklenir
-        def buildNumber = (System.getenv("GITHUB_RUN_NUMBER") ?: "1") as Integer
-        versionCode buildNumber
-        versionName "1.0.${buildNumber}"
+        // Play'e her yeni yüklemede versionCode bir artırılır
+        versionCode 1
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -18,21 +17,23 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
-    // İmza anahtarı GitHub gizli değişkenlerinden (secrets) gelir, depoda durmaz
+    // Nekank yükleme anahtarı android/key.properties dosyasından okunur (git'e girmez)
+    def keyFile = rootProject.file("key.properties")
+    def keys = new Properties()
+    if (keyFile.exists()) keyFile.withInputStream { keys.load(it) }
     signingConfigs {
         release {
-            if (System.getenv("ANDROID_KEYSTORE_PATH")) {
-                storeFile file(System.getenv("ANDROID_KEYSTORE_PATH"))
-                storeType "pkcs12"
-                storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
-                keyAlias System.getenv("ANDROID_KEY_ALIAS")
-                keyPassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+            if (keyFile.exists()) {
+                storeFile file(keys["storeFile"])
+                storePassword keys["storePassword"]
+                keyAlias keys["keyAlias"]
+                keyPassword keys["keyPassword"]
             }
         }
     }
     buildTypes {
         release {
-            if (System.getenv("ANDROID_KEYSTORE_PATH")) signingConfig signingConfigs.release
+            if (keyFile.exists()) signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

@@ -15,13 +15,14 @@ npm run build   # yayına hazır sürüm → dist/ klasörü
 
 Telefondan denemek için: `npm run dev -- --host` çalıştır, çıkan `Network:` adresini aynı Wi-Fi'deki telefonun tarayıcısında aç.
 
-## Android APK
+## Android (Google Play)
 
-- **İndirme linki (hep son sürüm):** https://github.com/Furkanrdmm/cift-kanalli-pisti/releases/latest/download/cift-kanalli-pisti.apk
-- `main` dalına her push'ta (sadece `.md` dosyaları değiştiyse hariç) GitHub Actions APK'yı otomatik derler ve **Son Sürüm** olarak yayınlar (`.github/workflows/android.yml`). Derleme ~5 dakika sürer.
-- Uygulama web oyununu [Capacitor](https://capacitorjs.com) ile Android'e sarar (`android/` klasörü, `capacitor.config.ts`).
-- **İmza anahtarı** depoda değil: `../imza-anahtari/` klasöründe ve GitHub secrets'ta (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`). Kaybolursa telefonlardaki uygulama güncellenemez, silip yeniden kurmak gerekir.
-- Telefona kurarken "bilinmeyen kaynaklara izin ver" ve Play Protect uyarısı çıkabilir: "Yine de yükle".
+- Uygulama web oyununu [Capacitor](https://capacitorjs.com) ile Android'e sarar (`android/` klasörü, `capacitor.config.ts`). Kimlik `com.nekank.ciftkanallipisti`.
+- **Play paketi (AAB):** `npm run build && npx cap sync android`, sonra `android` klasöründe `gradlew bundleRelease -Pandroid.overridePathCheck=true` (klasör adındaki Türkçe harfler yüzünden bu ek gerekli). Çıktı: `android/app/build/outputs/bundle/release/app-release.aab`.
+- **İmza:** Nekank yükleme anahtarı. `android/key.properties` (git dışında) `C:UserserdemDocumentsNekankimza` klasörünü gösterir. Play App Signing açık.
+- **Sürüm:** Her Play yüklemesinde `android/app/build.gradle` içindeki `versionCode` bir artırılır, `versionName` de güncellenir.
+- Mağaza yazıları, görseller ve form cevapları: `magaza/`.
+- Eski APK dağıtımı (GitHub Releases, `com.furkanrdmm` kimliği ve `../imza-anahtari/pisti.p12`) kapatıldı. Eski APK'yı kuranlar silip Play'den kurar.
 - **Uygulama simgesi ve açılış ekranı:** kaynağı `assets/build-icons.mjs`. Değiştirdikten sonra: `node assets/build-icons.mjs && npx capacitor-assets generate --android --iconBackgroundColor "#1f6b3a" --splashBackgroundColor "#3e2210"`
 
 ---
@@ -77,7 +78,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - **4 kişi eşli** (`teams: [[0,2],[1,3]]`): karşılıklı oturanlar takım. Kartlar, piştiler ve "en çok kart" takım olarak sayılır (`score()` taraf başına hesaplar).
 - **Tekli:** herkes kendine.
 - Sıra saat yönünün tersine: senden sonra sağdaki oynar. Ekranda rakipler üstte, sıradaki en sağda.
-- Diğer oyuncular şimdilik bilgisayar (online gelince arkadaşlar).
+- Diğer oyuncular bilgisayar.
 
 
 
@@ -85,9 +86,10 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 
 ## Verilen kararlar
 
-- **Platform:** Telefonda tarayıcıdan açılan web oyunu (PWA). Mağaza gerekmez, link ile paylaşılır, ana ekrana eklenebilir. Sonradan gerçek uygulamaya çevrilebilir.
+- **Platform:** Android'de Google Play (Nekank stüdyosu); iPhone ve bilgisayarda tarayıcıdan açılan web sürümü (PWA).
 - **Teknoloji:** React + TypeScript + Vite.
-- **Online:** Firebase Realtime Database + anonim giriş (ücretsiz Spark planı). Oda kodu 4 haneli. Oyunun hesabını telefonlar yapar: sırası gelen oyuncu hamlesini yazar, bilgisayar oyuncularını ve bağlantısı kopan oyuncuyu (15 sn sonra) kurucu oynatır. Bilinen sınır: veritabanında bütün kartlar durduğu için kurcalayan biri rakibin elini görebilir (arkadaş arası kabul edildi).
+- **Online yok (13 Kasım 2026):** Firebase ile yapılmış online bölümü Play öncesi kaldırıldı; oyun tek kişilik (bilgisayara karşı), internet izni yok, veri toplamaz. Eski kod git geçmişinde.
+- **Reklam yok** (stüdyo kararı).
 - **Görünüm:** Kahvehane masası: çuha, ahşap çerçeve. Yumuşak ve tatlı: yuvarlak yazı tipleri (başlık/sayı: Fredoka, metin: Nunito; `@fontsource-variable` ile uygulamaya gömülü, internetsiz çalışır), hap düğmeler, yuvarlak kartlar.
 - **Oyuncu sayısı:** 2, 3 veya 4 kişi. 4 kişide eşli ya da tekli seçilir.
 - **Bilgisayara karşı oynama:** Var.
@@ -112,16 +114,13 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 | `src/components/HowToPlay.tsx` | "Nasıl Oynanır?" ekranı (kurallar ve puanlar) |
 | `src/index.css` | Tüm görünüm (masa, kartlar, animasyonlar) |
 | `android/`, `capacitor.config.ts` | Android uygulaması |
-| `.github/workflows/android.yml` | APK otomatik derleme |
 | `.github/workflows/pages.yml` | Web sürümünü her push'ta GitHub Pages'e koyar (iPhone ve tarayıcı) |
 | `public/manifest.webmanifest`, `public/icons/` | Ana ekrana ekleme (PWA) ayarları ve simgeleri |
-| `src/online/firebase.ts` | Firebase bağlantısı ve anonim giriş |
-| `src/online/room.ts` | Oda kurma/katılma, koltuklar, çevrimiçi durumu, oyun durumunu yazma (sayaçla çakışma önleme) |
-| `src/online/perspective.ts` | Herkes kendini altta görsün diye oyun durumunu oyuncuya göre döndürme |
-| `src/components/OnlineScreen.tsx` | Online giriş (oda kur/katıl) ve bekleme odası (koltuk seçme, 4 kişi eşlide + Bilgisayar) |
-| `database.rules.json` | Firebase veritabanı kuralları (Firebase konsolunda Realtime Database → Rules sekmesine yapıştırılır) |
 | `src/components/InstallHint.tsx` | iPhone Safari'de "Ana Ekrana Ekle" ipucu |
 | `assets/` | Uygulama simgesi ve açılış ekranı kaynakları |
+| `src/components/Icon.tsx` | Çizilmiş simgeler (geri, ayarlar, kurallar, istatistik, kart) |
+| `src/components/ConfirmDialog.tsx` | Oyunun görünümünde "emin misin?" penceresi |
+| `magaza/` | Play mağaza yazıları, ekran görüntüleri, kapak görseli (`kapak-gorseli.html` ile üretilir) |
 
 ## Yapılacaklar
 
@@ -130,8 +129,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - [x] Kahvehane masası görünümü
 - [x] "Nasıl Oynanır?" ekranı (ana menüden)
 - [x] Yarım kalan maçı kaydetme, menüde "Oyuna Devam Et"
-- [x] Arkadaşla online oynama (Firebase, 4 haneli oda kodu, 2-4 kişi, eşli, koltuk seçme, boş koltuğa bilgisayar)
-- [x] 1 günden uzun süredir kullanılmayan odalar, yeni oda kurulurken silinir
+- [x] ~~Arkadaşla online oynama~~ (Play öncesi kaldırıldı)
 - [x] Web sürümü (GitHub Pages) ve ana ekrana eklenebilir uygulama (PWA): iPhone için
 - [ ] Çevrimdışı çalışma (service worker)
 - [x] Animasyonlar: kart dağıtma, kart atma, yeri alma, son atılan kartın parlaması
@@ -142,7 +140,8 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - [x] Görünüm: masa rengi (yeşil/bordo/lacivert), kart arkası (bordo/lacivert/yeşil/siyah)
 - [ ] Müzik
 - [x] 3–4 kişilik oyun (4 kişide eşli/tekli)
-- [x] Android APK (GitHub Actions ile otomatik)
+- [x] Android: Play paketi (AAB), Nekank imzası
+- [ ] Google Play kapalı test ve yayın
 - [x] Uygulama simgesi ve açılış ekranı
 - [x] İnternette yayınlama: https://furkanrdmm.github.io/cift-kanalli-pisti/
 

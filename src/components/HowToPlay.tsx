@@ -1,4 +1,5 @@
 import type { Card } from '../game/engine'
+import { Icon } from './Icon'
 import { PlayingCard } from './PlayingCard'
 
 const c = (rank: Card['rank'], suit: Card['suit']): Card => ({ id: rank + suit, rank, suit })
@@ -9,7 +10,7 @@ export function HowToPlay({ onBack }: { onBack: () => void }) {
       <div className="howto">
         <header className="topbar">
           <button className="icon-btn" onClick={onBack} aria-label="Menüye dön">
-            ←
+            <Icon name="back" />
           </button>
           <h2 className="howto-title">Nasıl Oynanır?</h2>
           <span style={{ width: 38 }} />
@@ -153,38 +154,7 @@ export function HowToPlay({ onBack }: { onBack: () => void }) {
           </section>
 
           <section>
-            <h3>7. Arkadaşla Online</h3>
-            <ul>
-              <li>
-                Menüden <b>👥 Arkadaşla Online</b>'a gir ve adını yaz.
-              </li>
-              <li>
-                <b>Oda Kur:</b> kaç kişi, eşli mi ve kaç oyun alan kazanır seç. Ekranda <b>4 haneli oda kodu</b> çıkar.
-              </li>
-              <li>
-                <b>Arkadaşlarına gönder</b> ile kodu WhatsApp'tan paylaş. Arkadaşların <b>Odaya Katıl</b>'a kodu yazar ya da gönderdiğin linke
-                dokunur.
-              </li>
-              <li>
-                Bekleme odasında koltuklar masa gibi dizilir: 1. altta, 2. sağda, 3. karşıda, 4. solda. Boş koltuktaki <b>Otur</b> ile oraya
-                geçersin. Eşli oyunda karşılıklı oturanlar eştir, kiminle takım olacağınızı böyle seçersiniz.
-              </li>
-              <li>
-                4 kişi eşlide kurucu boş koltuğa <b>+ Bilgisayar</b> ekleyebilir. Arkadaşınla takım olup bilgisayarlara karşı oynayabilirsin.
-              </li>
-              <li>
-                Odada en az 2 kişi olunca kurucu <b>Oyunu Başlat</b> der. Boş kalan koltuklara bilgisayar oturur.
-              </li>
-              <li>Herkes kendini altta görür. Yeni oyunu kurucu başlatır.</li>
-              <li>
-                Birinin interneti koparsa kutusunda <b>"bağlantı yok"</b> yazar. Sırası gelince 15 saniye sonra onun yerine bilgisayar oynar.
-              </li>
-              <li>Android, iPhone ve bilgisayar aynı odada oynayabilir.</li>
-            </ul>
-          </section>
-
-          <section>
-            <h3>8. Ekranda Nasıl Oynanır?</h3>
+            <h3>7. Ekranda Nasıl Oynanır?</h3>
             <ul>
               <li>Elindeki bir karta dokun, kart yukarı kalkar.</li>
               <li>

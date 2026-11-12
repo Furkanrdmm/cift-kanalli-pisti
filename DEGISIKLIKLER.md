@@ -1,9 +1,20 @@
 # Değişiklik Günlüğü
 
-Her sürüm GitHub'da otomatik APK olarak yayınlanır ("Son Sürüm #numara").
+v1.4 ve sonrası Google Play'e yüklenir; önceki sürümler GitHub'da APK olarak yayınlanmıştı.
 Önemli noktalarda git etiketi konur, gerekirse o sürüme dönülebilir.
 
 ---
+
+## v1.4 — Google Play hazırlığı (2026-11-13)
+
+- Uygulama Nekank stüdyosuna geçti: kimlik `com.nekank.ciftkanallipisti`, Nekank imzası, Play paketi (AAB)
+- **Online bölümü kaldırıldı:** oyun tek kişilik (bilgisayara karşı 2-4 kişi), internet gerekmez, veri toplamaz
+- Telefonun geri tuşu menüye döner, menüdeyken oyundan çıkar
+- "Emin misin?" soruları oyunun kendi penceresiyle sorulur
+- Menü ve oyun düğmelerindeki emojiler yerine çizilmiş simgeler
+- 3-4 kişide kartlar artık doğru oranda; küçük ekranda yazılar ve kartlar üst üste binmez
+- GitHub'daki otomatik APK yayını kapatıldı; web sürümü (iPhone, bilgisayar) sürüyor
+- Mağaza yazıları ve görselleri: `magaza/`
 
 ## v1.3 — Masa düzeni (2026-09-24)
 
