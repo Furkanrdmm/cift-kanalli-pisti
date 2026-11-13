@@ -109,9 +109,20 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 16px;
   padding: 24px;
+  overflow-y: auto;
+}
+
+/* Yer varsa ortalar, sığmazsa üstten başlayıp kaydırılır (içerik kesilmez) */
+.menu::before,
+.menu::after {
+  content: '';
+  margin-block: auto;
+}
+
+.menu > * {
+  flex-shrink: 0;
 }
 
 .menu-logo {
@@ -151,6 +162,25 @@ button {
   background-clip: text;
   color: transparent;
   filter: drop-shadow(0 2px 0 rgba(120, 70, 15, 0.55)) drop-shadow(0 6px 10px rgba(0, 0, 0, 0.22));
+}
+
+/* Kısa ekranlar: logo, başlık ve aralar küçülür */
+@media (max-height: 760px) {
+  .menu {
+    gap: 12px;
+    padding: 16px 24px;
+  }
+  .menu-logo {
+    width: 92px;
+    height: 60px;
+  }
+  .title {
+    margin-bottom: 4px;
+    font-size: 22px;
+  }
+  .title span {
+    font-size: 56px;
+  }
 }
 
 .menu-section {
@@ -1330,12 +1360,6 @@ button {
   margin: 24px auto 8px;
   font-size: 15px;
   opacity: 0.8;
-}
-
-/* Kısa ekranlarda menü kaydırılabilsin */
-.menu {
-  overflow-y: auto;
-  justify-content: safe center;
 }
 
 /* Seçilen kart yukarı kalkınca isim satırının üstüne binmesin */
