@@ -5,7 +5,11 @@ v1.4 ve sonrası Google Play'e yüklenir; önceki sürümler GitHub'da APK olara
 
 ---
 
-## Play 1.0.1 (2026-11-13)
+## Play 1.0.2 (2026-11-13)
+
+- Açılış ekranında yeni simge
+
+## Play 1.0.1 (2026-11-13, yüklenip taslağı silindi)
 
 - Yeni uygulama simgesi (mağazadaki simgeyle aynı)
 

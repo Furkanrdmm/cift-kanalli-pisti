@@ -35,14 +35,14 @@ const background = svg(100, 100, `<defs><linearGradient id="bg" x1="0" y1="0" x2
   <stop offset="0" stop-color="#1f6639"/><stop offset="1" stop-color="#102d1a"/></linearGradient></defs>
   <rect width="100" height="100" fill="url(#bg)"/>`)
 
-// Açılış ekranı: ahşap zemin, ortada simge
-const splash = svg(100, 100, `${felt}
-  <rect width="100" height="100" fill="#3e2210"/>
-  <g transform="translate(38 38) scale(0.24)">
-    <rect width="100" height="100" rx="22" fill="url(#felt)"/>
-    <rect x="4" y="4" width="92" height="92" rx="19" fill="none" stroke="#e8c26a" stroke-width="2" opacity=".6"/>
-    <g transform="translate(4 -4) scale(0.92)">${cards}</g>
-  </g>`)
+// Açılış ekranı: ahşap zemin, ortada yuvarlak köşeli yeni simge
+const splashIcon = 820
+const roundMask = Buffer.from(svg(splashIcon, splashIcon, `<rect width="${splashIcon}" height="${splashIcon}" rx="${splashIcon * 0.22}"/>`))
+const splash = async (name) => {
+  const icon = await sharp(gemini).resize(splashIcon, splashIcon).composite([{ input: roundMask, blend: 'dest-in' }]).png().toBuffer()
+  await sharp({ create: { width: 2732, height: 2732, channels: 3, background: '#3e2210' } })
+    .composite([{ input: icon, gravity: 'center' }]).png().toFile(fileURLToPath(new URL(name, dir)))
+}
 
 // Web simgesi (yuvarlak köşeli)
 const favicon = svg(100, 100, `${felt}
@@ -59,7 +59,7 @@ await Promise.all([
   sharp(gemini).resize(1024, 1024).png().toFile(fileURLToPath(new URL('icon-only.png', dir))),
   sharp(gemini).resize(1024, 1024).png().toFile(fileURLToPath(new URL('icon-foreground.png', dir))),
   png(background, 1024, 'icon-background.png'),
-  png(splash, 2732, 'splash.png'),
-  png(splash, 2732, 'splash-dark.png'),
+  splash('splash.png'),
+  splash('splash-dark.png'),
 ])
 console.log('ikonlar hazır')
