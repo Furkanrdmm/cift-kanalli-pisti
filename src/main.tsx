@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import '@fontsource-variable/nunito'
-import '@fontsource-variable/fredoka'
+import '@fontsource-variable/baloo-2'
 import './index.css'
 import App from './App.tsx'
 import { unlockAudio } from './effects/sound'

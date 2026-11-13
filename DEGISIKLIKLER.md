@@ -5,6 +5,15 @@ v1.4 ve sonrası Google Play'e yüklenir; önceki sürümler GitHub'da APK olara
 
 ---
 
+## Play 1.0.4 (2026-11-13)
+
+- Başlık yazı tipi Baloo 2: ş, İ, ğ artık başka yazı tipiyle çıkmıyor
+- Menü yazıları daha kalın; ana düğme "Oyna", yarım maç varken "Yeni Maç"
+- Menü logosu yeni simgenin kartları
+- Tam ekran giriş ekranı (yeşil çuha, ortada simge), yuvarlak simge ve beyaz zemin yok
+- Saat/pil çubuğu ve alt çubuk beyaz değil, ahşap renginde
+- Paket 6,4 MB'tan 5,4 MB'a indi
+
 ## Play 1.0.3 (2026-11-13)
 
 - Kod küçültme (R8) açıldı; kod gösterme dosyası pakete kendiliğinden girer, Play uyarısı kalkar. Paket 8 MB'tan 6,4 MB'a indi.

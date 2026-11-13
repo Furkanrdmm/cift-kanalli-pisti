@@ -1,4 +1,4 @@
-// Uygulama simgesi ve açılış ekranı kaynaklarını üretir.
+// Uygulama simgesi ve giriş ekranı görselini üretir.
 // Kullanım: node assets/build-icons.mjs && npx @capacitor/assets generate --android
 import { writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -35,13 +35,15 @@ const background = svg(100, 100, `<defs><linearGradient id="bg" x1="0" y1="0" x2
   <stop offset="0" stop-color="#1f6639"/><stop offset="1" stop-color="#102d1a"/></linearGradient></defs>
   <rect width="100" height="100" fill="url(#bg)"/>`)
 
-// Açılış ekranı: ahşap zemin, ortada yuvarlak köşeli yeni simge
-const splashIcon = 820
-const roundMask = Buffer.from(svg(splashIcon, splashIcon, `<rect width="${splashIcon}" height="${splashIcon}" rx="${splashIcon * 0.22}"/>`))
-const splash = async (name) => {
-  const icon = await sharp(gemini).resize(splashIcon, splashIcon).composite([{ input: roundMask, blend: 'dest-in' }]).png().toBuffer()
-  await sharp({ create: { width: 2732, height: 2732, channels: 3, background: '#3e2210' } })
-    .composite([{ input: icon, gravity: 'center' }]).png().toFile(fileURLToPath(new URL(name, dir)))
+// Giriş ekranının ortasındaki görsel: simge, kenarları yeşil zemine yumuşakça karışır.
+// Android'de android/app/src/main/res/drawable/splash_screen.xml, oyunda index.html içindeki #intro aynı görseli gösterir.
+const splashArt = async () => {
+  const s = 960
+  const fade = await sharp(Buffer.from(svg(s, s, `<rect x="60" y="60" width="${s - 120}" height="${s - 120}" rx="140" fill="#fff"/>`)))
+    .blur(40).toBuffer()
+  const art = await sharp(gemini).resize(s, s).ensureAlpha().composite([{ input: fade, blend: 'dest-in' }]).png().toBuffer()
+  await sharp(art).toFile(fileURLToPath(new URL('../android/app/src/main/res/drawable-xxhdpi/splash_art.png', dir)))
+  await sharp(art).toFile(fileURLToPath(new URL('../public/splash-art.png', dir)))
 }
 
 // Web simgesi (yuvarlak köşeli)
@@ -59,7 +61,6 @@ await Promise.all([
   sharp(gemini).resize(1024, 1024).png().toFile(fileURLToPath(new URL('icon-only.png', dir))),
   sharp(gemini).resize(1024, 1024).png().toFile(fileURLToPath(new URL('icon-foreground.png', dir))),
   png(background, 1024, 'icon-background.png'),
-  splash('splash.png'),
-  splash('splash-dark.png'),
+  splashArt(),
 ])
 console.log('ikonlar hazır')

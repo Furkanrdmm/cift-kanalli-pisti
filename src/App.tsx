@@ -57,7 +57,7 @@ export default function App() {
     <div className="table">
       <div className="menu">
         <InstallHint />
-        <img className="menu-logo" src="./favicon.svg" alt="" />
+        <img className="menu-logo" src="./menu-logo.png" alt="" />
         <h1 className="title">
           Çift Kanallı
           <span>Pişti</span>
@@ -116,7 +116,7 @@ export default function App() {
           className={saved ? 'btn' : 'btn btn--primary'}
           onClick={() => (saved ? setAskNew(true) : startNew())}
         >
-          {saved ? 'Yeni Maç (Bilgisayara Karşı)' : 'Bilgisayara Karşı Oyna'}
+          {saved ? 'Yeni Maç' : 'Oyna'}
         </button>
         <div className="menu-row">
           <button className="btn" onClick={() => setScreen({ name: 'howto' })}>

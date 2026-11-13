@@ -16,8 +16,33 @@
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
 
     <title>Çift Kanallı Pişti</title>
+    <!-- Giriş ekranı: Android açılış görseliyle birebir aynı, kısa süre sonra menüye yumuşakça geçer -->
+    <style>
+      #intro {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #1f6639, #185430, #102d1a);
+        pointer-events: none;
+        animation: intro-out 0.45s ease 1.6s forwards;
+      }
+      #intro img {
+        width: 320px;
+        height: 320px;
+      }
+      @keyframes intro-out {
+        to {
+          opacity: 0;
+          visibility: hidden;
+        }
+      }
+    </style>
   </head>
   <body>
+    <div id="intro"><img src="./splash-art.png" alt="" /></div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

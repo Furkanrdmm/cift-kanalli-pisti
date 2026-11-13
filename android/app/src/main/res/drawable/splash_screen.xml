@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Giriş ekranı: tam ekran yeşil çuha, ortada simge (oyun yüklenirken görünür) -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient android:angle="270" android:startColor="#1f6639" android:centerColor="#185430" android:endColor="#102d1a" />
+        </shape>
+    </item>
+    <item android:gravity="center">
+        <bitmap android:src="@drawable/splash_art" android:gravity="center" />
+    </item>
+</layer-list>

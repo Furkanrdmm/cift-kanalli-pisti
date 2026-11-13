@@ -13,10 +13,20 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
+        <!-- Saat/pil çubuğu ve alt çubuk ahşap renginde, simgeleri açık renk (zemin düz renk olmalı) -->
+        <item name="android:windowBackground">@color/woodDark</item>
+        <item name="android:statusBarColor">@color/woodDark</item>
+        <item name="android:navigationBarColor">@color/woodDark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 
 
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-        <item name="android:background">@drawable/splash</item>
+        <item name="android:background">@drawable/splash_screen</item>
+        <!-- Android 12 ve sonrası: yuvarlak simge yok, giriş görselinin yeşiliyle aynı düz zemin -->
+        <item name="windowSplashScreenBackground">@color/feltMid</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_empty</item>
+        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
     </style>
 </resources>
