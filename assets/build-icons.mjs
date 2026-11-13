@@ -29,15 +29,11 @@ const felt = `
 
 const svg = (w, h, body) => `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${body}</svg>`
 
-// Tam simge (eski Android ve web için)
-const iconOnly = svg(100, 100, `${felt}
-  <rect width="100" height="100" fill="url(#felt)"/>
-  <rect x="5" y="5" width="90" height="90" rx="16" fill="none" stroke="#e8c26a" stroke-width="2" opacity=".55"/>
-  <g transform="translate(4 -4) scale(0.92)">${cards}</g>`)
-
-// Uyarlanabilir simge: ön plan (şeffaf, ortadaki güvenli alanda) + arka plan
-const foreground = svg(100, 100, `<g transform="translate(13 14.5) scale(0.74)">${cards}</g>`)
-const background = svg(100, 100, `${felt}<rect width="100" height="100" fill="url(#felt)"/>`)
+// Uygulama simgesi mağaza simgesiyle aynı (Gemini görseli); capacitor-assets ön planı kendisi görünen alana küçültür
+const gemini = fileURLToPath(new URL('../magaza/kaynak/simge-gemini.jpg', import.meta.url))
+const background = svg(100, 100, `<defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#1f6639"/><stop offset="1" stop-color="#102d1a"/></linearGradient></defs>
+  <rect width="100" height="100" fill="url(#bg)"/>`)
 
 // Açılış ekranı: ahşap zemin, ortada simge
 const splash = svg(100, 100, `${felt}
@@ -60,8 +56,8 @@ const png = (s, size, name) => sharp(Buffer.from(s), { density: (72 * size) / 10
 writeFileSync(new URL('../public/favicon.svg', dir), favicon)
 writeFileSync(new URL('icon.svg', dir), favicon)
 await Promise.all([
-  png(iconOnly, 1024, 'icon-only.png'),
-  png(foreground, 1024, 'icon-foreground.png'),
+  sharp(gemini).resize(1024, 1024).png().toFile(fileURLToPath(new URL('icon-only.png', dir))),
+  sharp(gemini).resize(1024, 1024).png().toFile(fileURLToPath(new URL('icon-foreground.png', dir))),
   png(background, 1024, 'icon-background.png'),
   png(splash, 2732, 'splash.png'),
   png(splash, 2732, 'splash-dark.png'),
