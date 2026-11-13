@@ -5,6 +5,10 @@ v1.4 ve sonrası Google Play'e yüklenir; önceki sürümler GitHub'da APK olara
 
 ---
 
+## Play 1.0.1 (2026-11-13)
+
+- Yeni uygulama simgesi (mağazadaki simgeyle aynı)
+
 ## v1.4 — Google Play hazırlığı (2026-11-13)
 
 - Uygulama Nekank stüdyosuna geçti: kimlik `com.nekank.ciftkanallipisti`, Nekank imzası, Play paketi (AAB)
