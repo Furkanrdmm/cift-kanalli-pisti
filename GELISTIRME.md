@@ -103,6 +103,7 @@ Her dosyada tek parça vardır; klasörler işe göre ayrılır.
 | `src/App.tsx` | Ana menü, ekranlar arası geçiş, telefonun geri tuşu |
 | `src/game/` | Kurallar: `engine.ts` (dağıtım, hamleler, pişti, kanallar, puan), `bot.ts` (bilgisayar rakibi), `players.ts` (oyuncu ve takım adları) |
 | `src/storage/` | Telefona kaydedilenler: `save.ts` (yarım maç), `settings.ts` (ayarlar), `stats.ts` (istatistik) |
+| `src/hooks/` | `useFitHeight.ts`: menü ekrana sığmazsa orantılı küçültür (kaydırma yok) |
 | `src/effects/` | `sound.ts` (Web Audio ile üretilen sesler), `haptics.ts` (titreşim), `flyers.ts` (uçan kart süre ve konum hesapları) |
 | `src/screens/` | Ekranlar: `Game.tsx` (oyun masası), `HowToPlay.tsx` (kurallar), `SettingsPanel.tsx` (ayarlar; oyun içinde pencere), `StatsScreen.tsx` (istatistik) |
 | `src/components/` | Parçalar: `PlayingCard` (kart), `FlyLayer` (uçan kart katmanı), `PlayerInfo` (oyuncu kutusu), `ResultModal` (puan tablosu), `ConfirmDialog` (emin misin penceresi), `Icon` (çizilmiş simgeler), `Toggle` (aç/kapa), `StatTile` (istatistik kutusu), `InstallHint` (iPhone ana ekran ipucu) |

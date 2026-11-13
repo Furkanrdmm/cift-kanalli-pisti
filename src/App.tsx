@@ -10,6 +10,7 @@ import { ConfirmDialog } from './components/ConfirmDialog'
 import { applyTheme, useSettings } from './storage/settings'
 import { modeLabel, sideShortNames } from './game/players'
 import { type SavedMatch, clearMatch, loadMatch } from './storage/save'
+import { useFitHeight } from './hooks/useFitHeight'
 
 type Screen =
   | { name: 'menu' }
@@ -26,6 +27,7 @@ export default function App() {
   const [askNew, setAskNew] = useState(false)
   const toMenu = () => setScreen({ name: 'menu' })
   const settings = useSettings()
+  const fitRef = useFitHeight<HTMLDivElement>(`${screen.name}-${players}-${teamMode}`)
   useEffect(() => applyTheme(settings), [settings])
 
   // Telefonun geri tuşu: açık pencereyi kapatır, ekrandaysan menüye döner, menüdeysen çıkar
@@ -56,81 +58,83 @@ export default function App() {
   return (
     <div className="table">
       <div className="menu">
-        <InstallHint />
-        <img className="menu-logo" src="./menu-logo.png" alt="" />
-        <h1 className="title">
-          Çift Kanallı
-          <span>Pişti</span>
-        </h1>
+        <div className="menu-fit" ref={fitRef}>
+          <InstallHint />
+          <img className="menu-logo" src="./menu-logo.png" alt="" />
+          <h1 className="title">
+            Çift Kanallı
+            <span>Pişti</span>
+          </h1>
 
-        {saved && (
+          {saved && (
+            <button
+              className="btn btn--primary"
+              onClick={() => setScreen({ name: 'bot', target: saved.target, players: saved.game.playerCount, teamMode: !!saved.game.teams, resume: saved })}
+            >
+              Oyuna Devam Et
+              <small className="btn-sub">
+                {modeLabel(saved.game)} · {sideShortNames(saved.game).map((n, i) => `${n} ${saved.wins[i]}`).join(' – ')}
+              </small>
+            </button>
+          )}
+
+          <div className="menu-section">
+            <div className="menu-label">Kaç kişi?</div>
+            <div className="segmented">
+              {[2, 3, 4].map((n) => (
+                <button key={n} className={n === players ? 'active' : ''} onClick={() => setPlayers(n)}>
+                  {n}
+                </button>
+              ))}
+            </div>
+            {players === 4 && (
+              <div className="segmented segmented--text">
+                <button className={teamMode ? 'active' : ''} onClick={() => setTeamMode(true)}>
+                  Eşli
+                </button>
+                <button className={!teamMode ? 'active' : ''} onClick={() => setTeamMode(false)}>
+                  Tekli
+                </button>
+              </div>
+            )}
+            {players > 2 && (
+              <div className="menu-hint">
+                {players === 4 && teamMode ? 'Sen ve karşındaki bilgisayar bir takımsınız' : `Sen ve ${players - 1} bilgisayar`}
+              </div>
+            )}
+          </div>
+
+          <div className="menu-section">
+            <div className="menu-label">Kaç oyun alan kazanır?</div>
+            <div className="segmented">
+              {[1, 3, 5].map((n) => (
+                <button key={n} className={n === target ? 'active' : ''} onClick={() => setTarget(n)}>
+                  {n}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
-            className="btn btn--primary"
-            onClick={() => setScreen({ name: 'bot', target: saved.target, players: saved.game.playerCount, teamMode: !!saved.game.teams, resume: saved })}
+            className={saved ? 'btn' : 'btn btn--primary'}
+            onClick={() => (saved ? setAskNew(true) : startNew())}
           >
-            Oyuna Devam Et
-            <small className="btn-sub">
-              {modeLabel(saved.game)} · {sideShortNames(saved.game).map((n, i) => `${n} ${saved.wins[i]}`).join(' – ')}
-            </small>
+            {saved ? 'Yeni Oyun' : 'Oyna'}
           </button>
-        )}
-
-        <div className="menu-section">
-          <div className="menu-label">Kaç kişi?</div>
-          <div className="segmented">
-            {[2, 3, 4].map((n) => (
-              <button key={n} className={n === players ? 'active' : ''} onClick={() => setPlayers(n)}>
-                {n}
-              </button>
-            ))}
+          <div className="menu-row">
+            <button className="btn" onClick={() => setScreen({ name: 'howto' })}>
+              <span className="menu-icon"><Icon name="book" size={22} /></span>
+              Kurallar
+            </button>
+            <button className="btn" onClick={() => setScreen({ name: 'stats' })}>
+              <span className="menu-icon"><Icon name="chart" size={22} /></span>
+              İstatistik
+            </button>
+            <button className="btn" onClick={() => setScreen({ name: 'settings' })}>
+              <span className="menu-icon"><Icon name="gear" size={22} /></span>
+              Ayarlar
+            </button>
           </div>
-          {players === 4 && (
-            <div className="segmented segmented--text">
-              <button className={teamMode ? 'active' : ''} onClick={() => setTeamMode(true)}>
-                Eşli
-              </button>
-              <button className={!teamMode ? 'active' : ''} onClick={() => setTeamMode(false)}>
-                Tekli
-              </button>
-            </div>
-          )}
-          {players > 2 && (
-            <div className="menu-hint">
-              {players === 4 && teamMode ? 'Sen ve karşındaki bilgisayar bir takımsınız' : `Sen ve ${players - 1} bilgisayar`}
-            </div>
-          )}
-        </div>
-
-        <div className="menu-section">
-          <div className="menu-label">Kaç oyun alan kazanır?</div>
-          <div className="segmented">
-            {[1, 3, 5].map((n) => (
-              <button key={n} className={n === target ? 'active' : ''} onClick={() => setTarget(n)}>
-                {n}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <button
-          className={saved ? 'btn' : 'btn btn--primary'}
-          onClick={() => (saved ? setAskNew(true) : startNew())}
-        >
-          {saved ? 'Yeni Oyun' : 'Oyna'}
-        </button>
-        <div className="menu-row">
-          <button className="btn" onClick={() => setScreen({ name: 'howto' })}>
-            <span className="menu-icon"><Icon name="book" size={22} /></span>
-            Kurallar
-          </button>
-          <button className="btn" onClick={() => setScreen({ name: 'stats' })}>
-            <span className="menu-icon"><Icon name="chart" size={22} /></span>
-            İstatistik
-          </button>
-          <button className="btn" onClick={() => setScreen({ name: 'settings' })}>
-            <span className="menu-icon"><Icon name="gear" size={22} /></span>
-            Ayarlar
-          </button>
         </div>
       </div>
       {askNew && <ConfirmDialog text="Yarım kalan oyun silinecek. Yeni oyun başlasın mı?" yes="Yeni Oyun" onYes={startNew} onNo={() => setAskNew(false)} />}

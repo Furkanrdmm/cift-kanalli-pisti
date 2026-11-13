@@ -5,6 +5,10 @@ v1.4 ve sonrası Google Play'e yüklenir; önceki sürümler GitHub'da APK olara
 
 ---
 
+## Play 1.0.7 (2026-11-13)
+
+- Menü her ekran boyunda kaydırmadan sığar: ekran kısaysa menü orantılı küçülür
+
 ## Play 1.0.6 (2026-11-13)
 
 - Kısa ekranlı telefonlarda menü sığmıyorsa kaydırılır; logo ve düğmeler artık kesilmiyor, ezilmiyor

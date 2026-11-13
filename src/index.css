@@ -109,19 +109,20 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
   padding: 24px;
-  overflow-y: auto;
 }
 
-/* Yer varsa ortalar, sığmazsa üstten başlayıp kaydırılır (içerik kesilmez) */
-.menu::before,
-.menu::after {
-  content: '';
-  margin-block: auto;
+/* Menünün içeriği; ekrana sığmazsa useFitHeight orantılı küçültür */
+.menu-fit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
 }
 
-.menu > * {
+.menu-fit > * {
   flex-shrink: 0;
 }
 
@@ -167,8 +168,10 @@ button {
 /* Kısa ekranlar: logo, başlık ve aralar küçülür */
 @media (max-height: 760px) {
   .menu {
-    gap: 12px;
     padding: 16px 24px;
+  }
+  .menu-fit {
+    gap: 12px;
   }
   .menu-logo {
     width: 92px;
