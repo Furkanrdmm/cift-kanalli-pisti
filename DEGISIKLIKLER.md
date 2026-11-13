@@ -5,10 +5,14 @@ v1.4 ve sonrası Google Play'e yüklenir; önceki sürümler GitHub'da APK olara
 
 ---
 
+## Play 1.0.5 (2026-11-13)
+
+- Menüde yarım oyun varken ikinci düğme "Yeni Oyun"
+
 ## Play 1.0.4 (2026-11-13)
 
 - Başlık yazı tipi Baloo 2: ş, İ, ğ artık başka yazı tipiyle çıkmıyor
-- Menü yazıları daha kalın; ana düğme "Oyna", yarım maç varken "Yeni Maç"
+- Menü yazıları daha kalın; ana düğme "Oyna"
 - Menü logosu yeni simgenin kartları
 - Tam ekran giriş ekranı (yeşil çuha, ortada simge), yuvarlak simge ve beyaz zemin yok
 - Saat/pil çubuğu ve alt çubuk beyaz değil, ahşap renginde

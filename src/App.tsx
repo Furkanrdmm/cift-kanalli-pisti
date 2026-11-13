@@ -116,7 +116,7 @@ export default function App() {
           className={saved ? 'btn' : 'btn btn--primary'}
           onClick={() => (saved ? setAskNew(true) : startNew())}
         >
-          {saved ? 'Yeni Maç' : 'Oyna'}
+          {saved ? 'Yeni Oyun' : 'Oyna'}
         </button>
         <div className="menu-row">
           <button className="btn" onClick={() => setScreen({ name: 'howto' })}>
@@ -133,7 +133,7 @@ export default function App() {
           </button>
         </div>
       </div>
-      {askNew && <ConfirmDialog text="Yarım kalan maç silinecek. Yeni maç başlasın mı?" yes="Yeni Maç" onYes={startNew} onNo={() => setAskNew(false)} />}
+      {askNew && <ConfirmDialog text="Yarım kalan oyun silinecek. Yeni oyun başlasın mı?" yes="Yeni Oyun" onYes={startNew} onNo={() => setAskNew(false)} />}
     </div>
   )
 }
