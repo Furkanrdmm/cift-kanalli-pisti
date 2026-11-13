@@ -23,7 +23,7 @@ Telefondan denemek için: `npm run dev -- --host` çalıştır, çıkan `Network
 - **Sürüm:** Her Play yüklemesinde `android/app/build.gradle` içindeki `versionCode` bir artırılır, `versionName` de güncellenir.
 - Mağaza yazıları, görseller ve form cevapları: `magaza/`.
 - Eski APK dağıtımı (GitHub Releases, `com.furkanrdmm` kimliği ve `../imza-anahtari/pisti.p12`) kapatıldı. Eski APK'yı kuranlar silip Play'den kurar.
-- **Uygulama simgesi ve açılış ekranı:** kaynağı `assets/build-icons.mjs`. Değiştirdikten sonra: `node assets/build-icons.mjs && npx capacitor-assets generate --android --iconBackgroundColor "#1f6b3a" --splashBackgroundColor "#3e2210"`
+- **Uygulama simgesi ve giriş ekranı:** kaynağı `assets/build-icons.mjs` (Gemini simgesi `magaza/kaynak/`). Değiştirdikten sonra: `node assets/build-icons.mjs && npx capacitor-assets generate --android --iconBackgroundColor "#1f6b3a"`. Giriş ekranı Android'de `res/drawable/splash_screen.xml` ve `MainActivity.java`, oyunda `index.html` içindeki `#intro`; ikisi aynı görseli gösterir.
 
 ---
 
@@ -90,7 +90,7 @@ Kurallar normal pişti ile aynıdır; aşağıdakiler farklıdır.
 - **Teknoloji:** React + TypeScript + Vite.
 - **Online yok (13 Kasım 2026):** Firebase ile yapılmış online bölümü Play öncesi kaldırıldı; oyun tek kişilik (bilgisayara karşı), internet izni yok, veri toplamaz. Eski kod git geçmişinde.
 - **Reklam yok** (stüdyo kararı).
-- **Görünüm:** Kahvehane masası: çuha, ahşap çerçeve. Yumuşak ve tatlı: yuvarlak yazı tipleri (başlık/sayı: Fredoka, metin: Nunito; `@fontsource-variable` ile uygulamaya gömülü, internetsiz çalışır), hap düğmeler, yuvarlak kartlar.
+- **Görünüm:** Kahvehane masası: çuha, ahşap çerçeve. Yumuşak ve tatlı: yuvarlak yazı tipleri (başlık/sayı: Baloo 2, metin: Nunito; ikisinde de bütün Türkçe harfler var, Fredoka'da ş, İ, ğ olmadığı için bırakıldı; `@fontsource-variable` ile uygulamaya gömülü, internetsiz çalışır), hap düğmeler, yuvarlak kartlar.
 - **Oyuncu sayısı:** 2, 3 veya 4 kişi. 4 kişide eşli ya da tekli seçilir.
 - **Bilgisayara karşı oynama:** Var.
 
