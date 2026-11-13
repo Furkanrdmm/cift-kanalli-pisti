@@ -23,7 +23,7 @@ Kahvehane masasının pişti keyfi, yeni bir kuralla telefonunda.
 Puanlar normal pişti gibidir: pişti 10, vale ile vale piştisi 20, en çok kart 3, karo 10 3, sinek 2 2, her as ve vale 1 puan.
 ```
 
-- **Simge:** `simge-512.png` · **Kapak görseli:** `kapak-gorseli.png` (1024x500)
+- **Simge:** `simge-512.png` · **Kapak görseli:** `kapak-gorseli.png` (1024x500). İkisi de Google Gemini ile üretildi (13 Kasım 2026); büyük asılları `kaynak/`.
 - **Telefon ekran görüntüleri:** `ekran-goruntuleri/` (1080x1920, sırasıyla)
 - **Kategori:** Oyun → Kağıt. **Etiketler:** Kağıt, Eşleştirme, Gündelik
 - **İletişim:** nekankstudio@gmail.com · **Gizlilik:** https://nekank.com/privacy
