@@ -25,7 +25,7 @@ Puanlar normal pişti gibidir: pişti 10, vale ile vale piştisi 20, en çok kar
 
 - **Simge:** `simge-512.png` · **Kapak görseli:** `kapak-gorseli.png` (1024x500)
 - **Telefon ekran görüntüleri:** `ekran-goruntuleri/` (1080x1920, sırasıyla)
-- **Kategori:** Oyun → Kağıt. **Etiketler:** Kağıt, Eşleştirme, Gündelik, Masa oyunu
+- **Kategori:** Oyun → Kağıt. **Etiketler:** Kağıt, Eşleştirme, Kart savaşı, Gündelik
 - **İletişim:** nekankstudio@gmail.com · **Gizlilik:** https://nekank.com/privacy
 
 ## Formlar
@@ -37,4 +37,4 @@ Puanlar normal pişti gibidir: pişti 10, vale ile vale piştisi 20, en çok kar
 
 ## Sürüm
 - `versionCode` her Play yüklemesinde `android/app/build.gradle` içinde bir artırılır.
-- Paket: `android/app/build/outputs/bundle/release/app-release.aab`
+- Paket: `derle.ps1` ile `android/app/build/outputs/bundle/release/cift_kanalli_pistiV<sürüm>.aab`

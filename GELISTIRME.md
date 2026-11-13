@@ -18,7 +18,7 @@ Telefondan denemek için: `npm run dev -- --host` çalıştır, çıkan `Network
 ## Android (Google Play)
 
 - Uygulama web oyununu [Capacitor](https://capacitorjs.com) ile Android'e sarar (`android/` klasörü, `capacitor.config.ts`). Kimlik `com.nekank.ciftkanallipisti`.
-- **Play paketi (AAB):** `npm run build && npx cap sync android`, sonra `android` klasöründe `gradlew bundleRelease -Pandroid.overridePathCheck=true` (klasör adındaki Türkçe harfler yüzünden bu ek gerekli). Çıktı: `android/app/build/outputs/bundle/release/app-release.aab`.
+- **Play paketi (AAB):** `derle.ps1` çalıştırılır (web derlemesi, `cap sync`, `gradlew bundleRelease -Pandroid.overridePathCheck=true`; bu ek klasör adındaki Türkçe harfler yüzünden gerekli). Çıktı: `android/app/build/outputs/bundle/release/cift_kanalli_pistiV<sürüm>.aab`.
 - **İmza:** Nekank yükleme anahtarı. `android/key.properties` (git dışında) `C:UserserdemDocumentsNekankimza` klasörünü gösterir. Play App Signing açık.
 - **Sürüm:** Her Play yüklemesinde `android/app/build.gradle` içindeki `versionCode` bir artırılır, `versionName` de güncellenir.
 - Mağaza yazıları, görseller ve form cevapları: `magaza/`.
