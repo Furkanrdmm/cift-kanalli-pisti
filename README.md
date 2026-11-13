@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/favicon.svg" width="110" alt="Çift Kanallı Pişti">
+<img src="magaza/simge-512.png" width="140" alt="Çift Kanallı Pişti">
 
 # Çift Kanallı Pişti
 
@@ -12,7 +12,7 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 [![iPhone'da Oyna](https://img.shields.io/badge/iPhone'da%20Oyna-Kurulum-000000?style=for-the-badge&logo=apple&logoColor=white)](#iphone-kurulum)<br>
 **[📖 Nasıl kurulur? (oyunun linki burada)](#iphone-kurulum)**
 
-<sub>Ücretsiz · Android sürümü yakında Google Play'de · iPhone ve bilgisayarda tarayıcıdan</sub>
+<sub>Ücretsiz · Reklamsız · Android: Google Play'de kapalı testte, yakında herkese açık · iPhone ve bilgisayarda tarayıcıdan</sub>
 
 <br>
 
@@ -30,6 +30,7 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 - 🟢 Kahvehane masası görünümü: yeşil çuha, ahşap masa
 - 🤖 Bilgisayara karşı oyna: **2, 3 veya 4 kişilik**, 4 kişide **eşli** ya da tekli
 - 🏆 1, 3 veya 5 oyunluk maçlar
+- 📵 İnternet gerekmez, reklam yok
 - 🔊 Sesler ve titreşim: pişti, kanal piştisi ve **vale piştisi için özel ses**
 - ⚙️ Ayarlar: adın, masa rengi, kart arkası rengi, ses, titreşim, oyun hızı
 - 📊 İstatistikler: kazandığın maçlar, piştiler, vale piştileri, galibiyet serisi
@@ -40,6 +41,10 @@ Kahvehane masasından telefonuna: kendi kurallarımızla oynanan pişti.
 <a id="nasil-kurulur"></a>
 
 ## 📲 Nasıl Kurulur?
+
+### 🤖 Android'de
+
+Oyun **Google Play**'e geliyor. Şu an kapalı testte: test listesine eklenen kişiler Play Store'dan kurabilir. Herkese açılınca linki buraya eklenecek. O zamana kadar Android telefonda da aşağıdaki web adresinden oynayabilirsin.
 
 <a id="iphone-kurulum"></a>
 
