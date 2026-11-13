@@ -25,7 +25,7 @@ Puanlar normal pişti gibidir: pişti 10, vale ile vale piştisi 20, en çok kar
 
 - **Simge:** `simge-512.png` · **Kapak görseli:** `kapak-gorseli.png` (1024x500)
 - **Telefon ekran görüntüleri:** `ekran-goruntuleri/` (1080x1920, sırasıyla)
-- **Kategori:** Oyun → Kağıt. **Etiketler:** Kağıt, Eşleştirme, Kart savaşı, Gündelik
+- **Kategori:** Oyun → Kağıt. **Etiketler:** Kağıt, Eşleştirme, Gündelik
 - **İletişim:** nekankstudio@gmail.com · **Gizlilik:** https://nekank.com/privacy
 
 ## Formlar
