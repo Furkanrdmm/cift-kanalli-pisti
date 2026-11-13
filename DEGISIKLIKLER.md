@@ -5,6 +5,10 @@ v1.4 ve sonrası Google Play'e yüklenir; önceki sürümler GitHub'da APK olara
 
 ---
 
+## Play 1.0.3 (2026-11-13)
+
+- Kod küçültme (R8) açıldı; kod gösterme dosyası pakete kendiliğinden girer, Play uyarısı kalkar. Paket 8 MB'tan 6,4 MB'a indi.
+
 ## Play 1.0.2 (2026-11-13)
 
 - Açılış ekranında yeni simge
